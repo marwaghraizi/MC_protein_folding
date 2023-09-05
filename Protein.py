@@ -29,4 +29,13 @@ class Protein:
             connected_residues.append([self.ALL_RESIDUES[res.index - 1], self.ALL_RESIDUES[res.index + 1]])
         return connected_residues
 
+    def calculate_energy(self):
+        hydrophobic_contacts = set()
+        for res in self.ALL_RESIDUES:
+            if res.type == "H":
+                neighbors = self.get_topological_neighbors(res)
+                for neighbor in neighbors:
+                    if neighbor.type == "H" and (neighbor.index, res.index) not in hydrophobic_contacts:
+                        hydrophobic_contacts.add(*(res.index, neighbor.index))
+        return -len(hydrophobic_contacts)
 
