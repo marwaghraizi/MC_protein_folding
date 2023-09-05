@@ -5,7 +5,15 @@ class Manipulation:
     def __init__(self):
         # registering all the proteins
         all_frames = []
-        temperature = 5 # placement provisoire
+        temperature = 5 #not sure if it should be here
+
+    """
+    choose a random amino acid --> choose a random move --> test if it can do the move --> if not choose another move 
+    --> if all moves are impossible --> choose another aa if not apply the move --> test the energy --> if favorable -->
+    keep it --> if not calculate proba --> if proba does not allow it --> remove from frame --> if not keep it
+    
+    Note: may need to create a test function for the possibility of each move but it causes redundancy)
+    """
 
     def choose_random_amino_acid(self, conformation):
         return()
@@ -29,7 +37,7 @@ class Manipulation:
     def test_movement(self, res, move):
         self.apply_move(move)
         current_energy = self.all_frames[-1].calculate_energy()
-        previous_energy = self.all_frames[-2].enery
+        previous_energy = self.all_frames[-2].energy
         if current_energy < previous_energy:
             print("Move was successful")
             return()
