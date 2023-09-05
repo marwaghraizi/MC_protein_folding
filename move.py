@@ -1,5 +1,5 @@
-import Protein
-import Residue
+import protein
+import residue
 
 
 class Move:
@@ -22,7 +22,8 @@ class Move:
 
         return()
 
-    def end_move(self, res):
+    def end_move(self, conformation, res):
+
         return Protein
 
     def crankshaft_move(self, res):

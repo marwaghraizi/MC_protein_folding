@@ -1,5 +1,4 @@
-import fold_protein
-import Protein
+import protein
 
 
 class Residue:

@@ -1,8 +1,11 @@
+import random
 import random as rd
 import numpy as np
 import argparse
-from Residue import Residue
+from protein import Protein
+from residue import Residue
 
+random.seed(3)
 polar_residues = ["E", "D", "H", "T", "S", "Y", "N", "Q", "R", "K", "H"]
 hydrophobic_residues = ["C", "W", "G", "A", "P", "I", "L", "M", "F", "V"]
 
@@ -21,7 +24,6 @@ HP_sequence = ""
 ALL_RESIDUES = []
 # set of tuples for hydrophobic contacts
 
-
 for idx, residue in enumerate(sequence):
     if residue in polar_residues:
         HP_sequence += "P"
@@ -33,7 +35,9 @@ for idx, residue in enumerate(sequence):
         residue_object.set_coordinates(idx, 0)
     ALL_RESIDUES.append(residue_object)
 
+initial_protein = Protein(ALL_RESIDUES)
 
+print(HP_sequence)
 
 occupied_positions = [residue.get_coordinates() for residue in ALL_RESIDUES]
 print(occupied_positions)
@@ -64,6 +68,11 @@ for i in range(len(ALL_RESIDUES)-1):
 
 print(occupied_positions)
 
+test_protein = Protein(ALL_RESIDUES)
+print(test_protein.calculate_energy())
+
+
+"""
 hydrophobic_contacts = set()
 
 def calculate_energy():
@@ -94,3 +103,5 @@ for i in range(1,len(hydrophobic_objects)-1):
         neighbor_type = str([x.type for x in ALL_RESIDUES if x.get_coordinates()==neighbor])
         print(neighbor_type)
 
+
+"""
