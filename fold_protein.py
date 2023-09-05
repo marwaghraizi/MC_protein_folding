@@ -18,7 +18,7 @@ with open(protein_file, "r") as filein:
             sequence += line.strip()
 
 HP_sequence = ""
-all_residues = []
+ALL_RESIDUES = []
 # set of tuples for hydrophobic contacts
 
 
@@ -31,11 +31,11 @@ for idx, residue in enumerate(sequence):
         HP_sequence += "H"
         residue_object = Residue("H", idx)
         residue_object.set_coordinates(idx, 0)
-    all_residues.append(residue_object)
+    ALL_RESIDUES.append(residue_object)
 
 
 
-occupied_positions = [residue.get_coordinates() for residue in all_residues]
+occupied_positions = [residue.get_coordinates() for residue in ALL_RESIDUES]
 print(occupied_positions)
 def is_free(a,b):
     if (a,b) in occupied_positions:
@@ -46,8 +46,8 @@ def is_free(a,b):
 def get_four_neighbors(a,b):
     return (a-1, b), (a+1, b), (a, b-1), (a, b+1)
 
-for i in range(len(all_residues)-1):
-    neighbors = get_four_neighbors(*(all_residues[i].get_coordinates()))
+for i in range(len(ALL_RESIDUES)-1):
+    neighbors = get_four_neighbors(*(ALL_RESIDUES[i].get_coordinates()))
     random_neighbor = rd.choice(neighbors)
     isFree = False
 
@@ -59,30 +59,28 @@ for i in range(len(all_residues)-1):
         if is_free(*(random_neighbor)):
             isFree = True
 
-    all_residues[i+1].set_coordinates(*(random_neighbor))
-    occupied_positions = [residue.get_coordinates() for residue in all_residues]
+    ALL_RESIDUES[i+1].set_coordinates(*(random_neighbor))
+    occupied_positions = [residue.get_coordinates() for residue in ALL_RESIDUES]
 
 print(occupied_positions)
 
 hydrophobic_contacts = set()
 
 def calculate_energy():
-    hydrophobic_objects = [residue for residue in all_residues if residue.type=="H"]
+    hydrophobic_objects = [residue for residue in ALL_RESIDUES if residue.type=="H"]
     print(hydrophobic_objects)
 
-hydrophobic_objects = [residue for residue in all_residues if residue.type=="H"]
+hydrophobic_objects = [residue for residue in ALL_RESIDUES if residue.type=="H"]
 print(HP_sequence)
 print(len(hydrophobic_objects))
 
-def is_connected():
-    return 0
 
 for i in range(1,len(hydrophobic_objects)-1):
     # getting the 4 neighboring positions
     neighbors = get_four_neighbors(*(hydrophobic_objects[i].get_coordinates()))
     # getting the preceding and the next residue index
-    preceding_neighbor_coord = (all_residues[hydrophobic_objects[i].index-1]).get_coordinates()
-    next_neighbor_coord = (all_residues[hydrophobic_objects[i].index+1]).get_coordinates()
+    preceding_neighbor_coord = (ALL_RESIDUES[hydrophobic_objects[i].index-1]).get_coordinates()
+    next_neighbor_coord = (ALL_RESIDUES[hydrophobic_objects[i].index+1]).get_coordinates()
     neighbors2 = list(neighbors)
     neighbors2.remove(preceding_neighbor_coord)
     neighbors2.remove(next_neighbor_coord)
@@ -93,6 +91,6 @@ for i in range(1,len(hydrophobic_objects)-1):
         # get the type of the residue whose coordinates match the topo neighbor coordinates
         # need to check if its occupied
         # memory speed tradeoff: create a dictionary with coordinates as keys
-        neighbor_type = str([x.type for x in all_residues if x.get_coordinates()==neighbor])
+        neighbor_type = str([x.type for x in ALL_RESIDUES if x.get_coordinates()==neighbor])
         print(neighbor_type)
 
