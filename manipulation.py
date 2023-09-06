@@ -2,10 +2,10 @@ import math
 import random
 import random as rd
 class Manipulation:
+    temperature = 5
     def __init__(self):
         # registering all the proteins
         all_frames = []
-        temperature = 5 #not sure if it should be here
 
     """
     choose a random amino acid --> choose a random move --> test if it can do the move --> if not choose another move 
@@ -20,8 +20,8 @@ class Manipulation:
 
     def choose_random_move(self,conformation, residue):
         if residue.index == 0 or residue.index == len(conformation.ALL_RESIDUES)-1:
-            return "end"
-        if residue.index > 0 and residue.index < len(conformation.ALL_RESIDUES)-1:
+            return "end" # can extremities do other moves?
+        if residue.index > 0 and residue.index < len(conformation.ALL_RESIDUES)-1: #else
             choice = random.choice(["corner", "crankshaft", "pull"])
             # test if the moves can be applied
             # what to do if none of them work? gotta choose another amino acid (recursion?)
