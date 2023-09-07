@@ -7,6 +7,12 @@ class Protein:
         for residue in residues:
             self.coordinates[(residue.coordI, residue.coordJ)] = residue
 
+    def is_free(self, x, y):
+        if (x, y) in self.coordinates:
+            return False
+        else:
+            return True
+
     def get_occupied_topological_neighbors(self, res):
         # get connected residues (obj)
         connected_residues = self.get_connected_residues(res)

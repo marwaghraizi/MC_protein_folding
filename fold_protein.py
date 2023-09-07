@@ -4,6 +4,7 @@ import numpy as np
 import argparse
 from protein import Protein
 from residue import Residue
+from manipulation import Manipulation
 
 random.seed(3)
 polar_residues = ["E", "D", "H", "T", "S", "Y", "N", "Q", "R", "K", "H"]
@@ -39,16 +40,24 @@ initial_protein = Protein(ALL_RESIDUES)
 
 print(HP_sequence)
 
+manipulation = Manipulation()
+manipulation.add_frame(initial_protein)
+
+
 occupied_positions = [residue.get_coordinates() for residue in ALL_RESIDUES]
 print(occupied_positions)
+
+
 def is_free(a,b):
-    if (a,b) in occupied_positions:
+    if (a, b) in occupied_positions:
         return False
     else:
         return True
 
+
 def get_four_neighbors(a,b):
     return (a-1, b), (a+1, b), (a, b-1), (a, b+1)
+
 
 for i in range(len(ALL_RESIDUES)-1):
     neighbors = get_four_neighbors(*(ALL_RESIDUES[i].get_coordinates()))
