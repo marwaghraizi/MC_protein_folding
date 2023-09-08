@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 class Protein:
 
     def __init__(self, residues):
@@ -41,6 +44,14 @@ class Protein:
         else:
             return True
 
+    def copy_protein(self):
+        copied_residues = []
+        for residue in self.all_residues:
+            copied_residue = deepcopy(residue)
+            copied_residues.append(copied_residue)
+        copied_conformation = Protein(copied_residues)
+        return copied_conformation
+
     def get_connected_residues(self, res):
         connected_residues = []
         if res.index == 0:
@@ -82,7 +93,7 @@ class Protein:
 
     # returns topological positions that do not contain any residues
     def get_empty_topological_positions(self, res):
-        topological_positions = res.get_topological_neighbors_positions
+        topological_positions = res.get_topological_neighbors_positions()
         empty_topological_positions = []
         for position in topological_positions:
             if position not in self.coordinates:
@@ -102,5 +113,4 @@ class Protein:
                             hydrophobic_contacts.add((res.index, neighbor.index))
         # if i do this then no need to attribute the method in the constructor so which is it?
         self.energy = -len(hydrophobic_contacts)
-        print(hydrophobic_contacts)
         return -len(hydrophobic_contacts)

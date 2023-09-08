@@ -1,10 +1,13 @@
 import math
 import random
 import random as rd
+from protein import Protein
+from copy import deepcopy
 
 
 class Manipulation:
     temperature = 5
+    nb_iterations = 0
 
     def __init__(self):
         # registering all the proteins
@@ -15,79 +18,80 @@ class Manipulation:
     --> if all moves are impossible --> choose another aa if not apply the move --> test the energy --> if favorable -->
     keep it --> if not calculate proba --> if proba does not allow it --> remove from frame --> if not keep it
     
-    Note: may need to create a test function for the possibility of each move but it causes redundancy)
     """
     def add_frame(self, conformation):
         self.all_frames.append(conformation)
 
+    def show_all_frames(self):
+        for conformation in self.all_frames:
+            print(conformation.show())
+
     # maybe in protein
-    def choose_random_amino_acid(self, conformation):
-        random_aa = rd.choice(conformation.all_residues)
+    def choose_random_amino_acid(self):
+        random_aa = rd.choice(self.all_frames[-1].all_residues)
         return random_aa
 
-    @staticmethod
-    def choose_random_move(self, conformation, residue):
-
-        if residue.index == 0 or residue.index == len(conformation.ALL_RESIDUES)-1:
+    def choose_random_move(self):
+        new_protein = self.all_frames[-1].copy_protein()
+        #residue = new_protein.all_residues[1]
+        residue = self.choose_random_amino_acid()
+        decision = False
+        if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
             # can extremities do other moves?
-            return "end"
-
+            print("end")
+            decision = self.end_move(new_protein, residue)
         else:
             # can the choices be functions?
-            choice = random.choice(["corner", "crankshaft", "pull"])
+            choice = random.choice(["corner"])
+            print(choice)
             if choice == "corner":
-                self.corner_move(conformation)
+                decision = self.corner_move(new_protein, residue)
+            if choice == "crankshaft":
+                decision = self.crankshaft_move(new_protein, residue)
 
             # test if the moves can be applied
             # what to do if none of them work? gotta choose another amino acid (recursion?)
-        return False
-
-    def apply_move(self, conformation):
-        return 0
+        return decision
 
     # if the move was not energetically favorable and the probability was low --> need to remove it
-    def undo_move(self, move):
+    def undo_move(self):
         del self.all_frames[-1]
-        return ()
 
-    def test_movement(self, move):
-        self.apply_move(move)
+    def test_movement(self):
         current_energy = self.all_frames[-1].calculate_energy()
-        previous_energy = self.all_frames[-2].energy
-        if current_energy < previous_energy:
+        previous_energy = self.all_frames[-2].calculate_energy()
+        if current_energy <= previous_energy:
             print("Move was successful")
-            return()
         else:
             energy_difference = current_energy - previous_energy
             probability = math.exp(energy_difference/self.temperature)
             random_number = rd.random()
             if random_number < probability:
                 print("Unfavorable move was accepted")
-                return()
             else:
                 print("Move was not accepted")
-                self.undo_move(move)
-                return()
-
+                self.undo_move()
     # apply the move and return true if it was successful
     # check if a position is empty
 
     # moves (return true or false)
-    @staticmethod
     def corner_move(self, conformation, res):
         # if i-1 and i+1 share an available position --> move i to this position
         previous_residue = conformation.get_previous_residue(res)
         next_residue = conformation.get_next_residue(res)
-        previous_residue_neighbors = previous_residue.get_topological_neighbors()
-        next_residue_neighbors = next_residue.get_topological_neighbors()
-
+        previous_residue_neighbors = conformation.get_empty_topological_positions(previous_residue)
+        next_residue_neighbors = conformation.get_empty_topological_positions(next_residue)
+        # should account for empty lists??
         for neighbor in previous_residue_neighbors:
-            if neighbor in next_residue_neighbors and neighbor not in conformation.coordinates:
-                res.set_coordinates(*neighbor)
+            if neighbor in next_residue_neighbors:
+                print("YAY")
+                newI, newJ = neighbor
+                res.set_coordinates(newI, newJ)
+                self.add_frame(conformation)
                 return True
+        print("did not work")
         return False
 
-    @staticmethod
     def end_move(self, conformation, res):
         # ensure that its an extremity (redundant)
         # get neighbor (second or before last residue)
@@ -104,28 +108,35 @@ class Manipulation:
         else:
             neighbor = conformation.all_residues[-2]
 
-        topological_positions = conformation.get_topological_positions(neighbor)
+        topological_positions = neighbor.get_topological_neighbors_positions()
         options = []
 
         # choose topological positions of the neighbor that are not occupied
         for position in topological_positions:
             if position not in conformation.coordinates:
-                options.add(position)
+                options.append(position)
 
         probability = rd.random()
         if probability < 0.5:
-            res.set_coordinates(options[0])
+            newI, newJ = options[0]
+            res.set_coordinates(newI, newJ)
+            self.add_frame(conformation)
             return True
         else:
-            res.set_coordinates(options[1])
+            newI, newJ = options[1]
+            res.set_coordinates(newI, newJ)
+            self.add_frame(conformation)
             return True
-        return False
 
-    @staticmethod
-    def crankshaft_move(self, res):
+    def crankshaft_move(self, conformation, res):
 
         return False
 
-    @staticmethod
-    def choose_random_move(self):
-        return False
+    def apply_monte_carlo(self):
+        for i in range(self.nb_iterations):
+            move_successful = False
+            # while can be infinite
+            while move_successful is False:
+                aa = self.choose_random_amino_acid()
+                move_successful = self.choose_random_move()
+            self.test_movement()

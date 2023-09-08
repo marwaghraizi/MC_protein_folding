@@ -38,15 +38,23 @@ for idx, residue in enumerate(sequence):
     ALL_RESIDUES.append(residue_object)
 
 initial_protein = Protein(ALL_RESIDUES)
+initial_protein.all_residues[0].coordI = 1
+initial_protein.all_residues[0].coordJ = 1
+
 
 print(HP_sequence)
 print(initial_protein.show())
 
 manipulation = Manipulation()
 manipulation.add_frame(initial_protein)
+print(initial_protein)
+manipulation.apply_monte_carlo()
+manipulation.choose_random_move()
+manipulation.show_all_frames()
+print(len(manipulation.all_frames))
 
 
-
+""" 
 occupied_positions = [residue.get_coordinates() for residue in ALL_RESIDUES]
 print(occupied_positions)
 
@@ -84,7 +92,7 @@ test_protein = Protein(ALL_RESIDUES)
 print(test_protein.calculate_energy())
 
 print(test_protein.show())
-"""
+
 hydrophobic_contacts = set()
 
 def calculate_energy():
