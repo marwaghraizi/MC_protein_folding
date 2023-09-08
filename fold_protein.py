@@ -6,9 +6,10 @@ from protein import Protein
 from residue import Residue
 from manipulation import Manipulation
 
-random.seed(3)
+random.seed(5)
 polar_residues = ["E", "D", "H", "T", "S", "Y", "N", "Q", "R", "K", "H"]
 hydrophobic_residues = ["C", "W", "G", "A", "P", "I", "L", "M", "F", "V"]
+nb_iterations = 1000
 
 parser = argparse.ArgumentParser(description="Fold Protein")
 parser.add_argument('-f', '--file', metavar='protein', type=str, help='Protein File Path')
@@ -39,9 +40,11 @@ for idx, residue in enumerate(sequence):
 initial_protein = Protein(ALL_RESIDUES)
 
 print(HP_sequence)
+print(initial_protein.show())
 
 manipulation = Manipulation()
 manipulation.add_frame(initial_protein)
+
 
 
 occupied_positions = [residue.get_coordinates() for residue in ALL_RESIDUES]
@@ -80,7 +83,7 @@ print(occupied_positions)
 test_protein = Protein(ALL_RESIDUES)
 print(test_protein.calculate_energy())
 
-
+print(test_protein.show())
 """
 hydrophobic_contacts = set()
 
