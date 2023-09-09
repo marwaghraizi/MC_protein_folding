@@ -70,6 +70,23 @@ class Protein:
     def get_previous_residue(self, res):
         return self.all_residues[res.index-1]
 
+    def is_right_angle(self, res):
+        x_res, y_res = res.get_coordinates()
+        previous_res = self.get_previous_residue(res)
+        x_prev, y_prev = previous_res.get_coordinates()
+        next_res = self.get_next_residue(res)
+        x_next, y_next = next_res.get_coordinates()
+        slope1 = float('inf')
+        slope2 = float('inf')
+        if x_res - x_prev != 0:
+            slope1 = (y_res - y_prev) / (x_res - x_prev)
+        if x_next - x_res != 0:
+            slope2 = (y_next - y_res) / (x_next - x_res)
+        if slope1 * slope2 == -1:
+            return True
+        else:
+            return False
+
     # returns occupied topological positions that are not connected to the residue
     # to be cleaned?
     def get_occupied_topological_neighbors(self, res):

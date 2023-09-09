@@ -49,7 +49,7 @@ manipulation = Manipulation()
 manipulation.add_frame(initial_protein)
 print(initial_protein)
 manipulation.apply_monte_carlo()
-manipulation.choose_random_move()
+#manipulation.choose_random_move()
 manipulation.show_all_frames()
 print(len(manipulation.all_frames))
 

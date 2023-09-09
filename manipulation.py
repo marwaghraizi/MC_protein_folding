@@ -1,26 +1,20 @@
 import math
 import random
 import random as rd
-from protein import Protein
-from copy import deepcopy
 
 
 class Manipulation:
     temperature = 5
-    nb_iterations = 0
+    nb_iterations = 10000
 
     def __init__(self):
         # registering all the proteins
         self.all_frames = []
 
-    """
-    choose a random amino acid --> choose a random move --> test if it can do the move --> if not choose another move 
-    --> if all moves are impossible --> choose another aa if not apply the move --> test the energy --> if favorable -->
-    keep it --> if not calculate proba --> if proba does not allow it --> remove from frame --> if not keep it
-    
-    """
     def add_frame(self, conformation):
         self.all_frames.append(conformation)
+        # class attribute maybe?
+        self.protein_length = int(len(conformation.all_residues))
 
     def show_all_frames(self):
         for conformation in self.all_frames:
@@ -31,10 +25,10 @@ class Manipulation:
         random_aa = rd.choice(self.all_frames[-1].all_residues)
         return random_aa
 
-    def choose_random_move(self):
+    def choose_random_move(self, residue):
         new_protein = self.all_frames[-1].copy_protein()
         #residue = new_protein.all_residues[1]
-        residue = self.choose_random_amino_acid()
+        #residue = self.choose_random_amino_acid()
         decision = False
         if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
             # can extremities do other moves?
@@ -42,7 +36,7 @@ class Manipulation:
             decision = self.end_move(new_protein, residue)
         else:
             # can the choices be functions?
-            choice = random.choice(["corner"])
+            choice = random.choice(["corner", "crankshaft"])
             print(choice)
             if choice == "corner":
                 decision = self.corner_move(new_protein, residue)
@@ -129,14 +123,39 @@ class Manipulation:
             return True
 
     def crankshaft_move(self, conformation, res):
+        if len(conformation.all_residues) < 4:
+            return False
 
+        # checking the U shape
+        next_residue = conformation.get_next_residue(res)
+        if conformation.is_right_angle(res) and conformation.is_right_angle(next_residue):
+            # horizontal case
+            if res.coordJ == next_residue.coordJ:
+                if conformation.is_free((res.coordI, res.coordJ+2)) and conformation.is_free((next_residue.coordI,
+                                                                                              next_residue.coordJ+2)):
+                    res.set_coordinates(res.coordI, res.coordJ+2)
+                    next_residue.set_coordinates(next_residue.coordI, next_residue.coordJ+2)
+                    self.add_frame(conformation)
+                    return True
+            # vertical case
+            elif res.coordI == next_residue.coordI:
+                if conformation.is_free((res.coordI+2, res.coordJ)) and conformation.is_free((next_residue.coordI+2,
+                                                                                              next_residue.coordJ)):
+                    res.set_coordinates(res.coordI+2, res.coordJ)
+                    next_residue.set_coordinates(next_residue.coordI+2, next_residue.coordJ)
+                    self.add_frame(conformation)
+                    return True
         return False
 
     def apply_monte_carlo(self):
         for i in range(self.nb_iterations):
+            print(i)
             move_successful = False
             # while can be infinite
-            while move_successful is False:
+            amino_acids_used = []
+            while move_successful is False and len(amino_acids_used) < self.protein_length:
                 aa = self.choose_random_amino_acid()
-                move_successful = self.choose_random_move()
+                if aa not in amino_acids_used:
+                    amino_acids_used.append(aa)
+                    move_successful = self.choose_random_move(aa)
             self.test_movement()
