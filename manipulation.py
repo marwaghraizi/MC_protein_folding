@@ -37,12 +37,9 @@ class Manipulation:
             decision = self.end_move(new_protein, residue)
         else:
             # can the choices be functions?
-            choice = random.choice(["crankshaft", "corner"])
-            print(choice)
-            if choice == "corner":
-                decision = self.corner_move(new_protein, residue)
-            if choice == "crankshaft":
-                decision = self.crankshaft_move(new_protein, residue)
+            choice = random.choice([self.crankshaft_move, self.corner_move])
+            decision = choice(new_protein, residue)
+
 
             # test if the moves can be applied
             # what to do if none of them work? gotta choose another amino acid (recursion?)
@@ -77,15 +74,16 @@ class Manipulation:
         previous_residue_neighbors = conformation.get_empty_topological_positions(previous_residue)
         next_residue_neighbors = conformation.get_empty_topological_positions(next_residue)
         # should account for empty lists??
-        for neighbor in previous_residue_neighbors:
-            if neighbor in next_residue_neighbors:
-                print("YAY")
-                newI, newJ = neighbor
-                res.set_coordinates(newI, newJ)
-                self.add_frame(conformation)
-                return True
-        print("did not work")
-        return False
+        if previous_residue_neighbors:
+            for neighbor in previous_residue_neighbors:
+                if neighbor in next_residue_neighbors:
+                    #print("YAY")
+                    newI, newJ = neighbor
+                    res.set_coordinates(newI, newJ)
+                    self.add_frame(conformation)
+                    return True
+            #print("did not work")
+            return False
 
     def end_move(self, conformation, res):
         # ensure that its an extremity (redundant)
@@ -142,6 +140,7 @@ class Manipulation:
                     return True
             # vertical case
             elif res.coordI == next_residue.coordI:
+                # checking if the 180 flip positions are available
                 if conformation.is_free(res.coordI+2, res.coordJ) and conformation.is_free(next_residue.coordI+2,
                                                                                            next_residue.coordJ):
                     res.set_coordinates(res.coordI+2, res.coordJ)
@@ -162,18 +161,18 @@ class Manipulation:
         previous_previous_residue_neighbors = conformation.get_empty_topological_positions(previous_previous_residue)
         residue_neighbors = conformation.get_empty_topological_positions(residue)
         decision = False
-
+        C_neighbors = []
         if previous_previous_residue_neighbors:
             for neighbor in previous_previous_residue_neighbors:
                 if neighbor in residue_neighbors:
                     decision = True
                     C_coordI, C_coordJ = neighbor
+                    temp_residue_C = Residue("H", -1)
+                    temp_residue_C.set_coordinates(C_coordI, C_coordJ)
+                    C_neighbors = conformation.get_empty_topological_positions(temp_residue_C)
 
         # checking the availability of the L position (same as corner)
         next_residue_neighbors = conformation.get_empty_topological_positions(next_residue)
-        temp_residue_C = Residue("H", -1)
-        temp_residue_C.set_coordinates(C_coordI, C_coordJ)
-        C_neighbors = conformation.get_empty_topological_positions(temp_residue_C)
 
         if C_neighbors:
             for neighbor in C_neighbors:
@@ -182,6 +181,7 @@ class Manipulation:
                     L_coordI, L_coordJ = neighbor
                     residue.set_coordinates(C_coordI, C_coordJ)
                     next_residue.set_coordinates(L_coordI, L_coordJ)
+                    self.add_frame(conformation)
                     return decision
         return decision
 
@@ -196,3 +196,12 @@ class Manipulation:
                     amino_acids_used.append(aa)
                     move_successful = self.choose_random_move(aa)
             self.test_movement()
+
+    def apply_MC_VSHD(self):
+        return False
+
+    def apply_MC_VSHD_pull(self):
+        return False
+
+    def apply_MC_pull(self):
+        return False
