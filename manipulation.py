@@ -1,6 +1,7 @@
 import math
 import random
 import random as rd
+from residue import Residue
 
 
 class Manipulation:
@@ -27,7 +28,7 @@ class Manipulation:
 
     def choose_random_move(self, residue):
         new_protein = self.all_frames[-1].copy_protein()
-        residue = new_protein.all_residues[1]
+        #residue = new_protein.all_residues[1]
         #residue = self.choose_random_amino_acid()
         decision = False
         if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
@@ -36,7 +37,7 @@ class Manipulation:
             decision = self.end_move(new_protein, residue)
         else:
             # can the choices be functions?
-            choice = random.choice(["crankshaft"])
+            choice = random.choice(["crankshaft", "corner"])
             print(choice)
             if choice == "corner":
                 decision = self.corner_move(new_protein, residue)
@@ -150,11 +151,44 @@ class Manipulation:
                     return True
         return False
 
+    def pull_move(self, conformation, residue):
+        # i-1
+        previous_residue = conformation.get_previous_residue(residue)
+        # i-2
+        previous_previous_residue = conformation.get_previous_residue(previous_residue)
+        # i+1
+        next_residue = conformation.get_next_residue(residue)
+        # checking the availability of the C position (same as corner)
+        previous_previous_residue_neighbors = conformation.get_empty_topological_positions(previous_previous_residue)
+        residue_neighbors = conformation.get_empty_topological_positions(residue)
+        decision = False
+
+        if previous_previous_residue_neighbors:
+            for neighbor in previous_previous_residue_neighbors:
+                if neighbor in residue_neighbors:
+                    decision = True
+                    C_coordI, C_coordJ = neighbor
+
+        # checking the availability of the L position (same as corner)
+        next_residue_neighbors = conformation.get_empty_topological_positions(next_residue)
+        temp_residue_C = Residue("H", -1)
+        temp_residue_C.set_coordinates(C_coordI, C_coordJ)
+        C_neighbors = conformation.get_empty_topological_positions(temp_residue_C)
+
+        if C_neighbors:
+            for neighbor in C_neighbors:
+                if neighbor in next_residue_neighbors:
+                    decision = True
+                    L_coordI, L_coordJ = neighbor
+                    residue.set_coordinates(C_coordI, C_coordJ)
+                    next_residue.set_coordinates(L_coordI, L_coordJ)
+                    return decision
+        return decision
+
     def apply_monte_carlo(self):
         for i in range(self.nb_iterations):
             print(i)
             move_successful = False
-            # while can be infinite
             amino_acids_used = []
             while move_successful is False and len(amino_acids_used) < self.protein_length:
                 aa = self.choose_random_amino_acid()

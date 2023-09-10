@@ -56,7 +56,7 @@ print(initial_protein.show())
 manipulation = Manipulation()
 manipulation.add_frame(initial_protein)
 manipulation.apply_monte_carlo()
-#manipulation.show_all_frames()
+manipulation.show_all_frames()
 
 
 """ 
