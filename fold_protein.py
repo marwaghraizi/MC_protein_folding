@@ -38,20 +38,25 @@ for idx, residue in enumerate(sequence):
     ALL_RESIDUES.append(residue_object)
 
 initial_protein = Protein(ALL_RESIDUES)
-initial_protein.all_residues[0].coordI = 1
-initial_protein.all_residues[0].coordJ = 1
+# testing corner
+#initial_protein.all_residues[0].coordI = 1
+#initial_protein.all_residues[0].coordJ = 1
+
+# testing crankshaft
+initial_protein.all_residues[1].coordI = 0
+initial_protein.all_residues[1].coordJ = -1
+initial_protein.all_residues[2].coordI = 1
+initial_protein.all_residues[2].coordJ = -1
+initial_protein.all_residues[3].coordI = 1
+initial_protein.all_residues[3].coordJ = 0
 
 
-print(HP_sequence)
 print(initial_protein.show())
 
 manipulation = Manipulation()
 manipulation.add_frame(initial_protein)
-print(initial_protein)
 manipulation.apply_monte_carlo()
-#manipulation.choose_random_move()
-manipulation.show_all_frames()
-print(len(manipulation.all_frames))
+#manipulation.show_all_frames()
 
 
 """ 

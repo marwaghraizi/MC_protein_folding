@@ -27,7 +27,7 @@ class Manipulation:
 
     def choose_random_move(self, residue):
         new_protein = self.all_frames[-1].copy_protein()
-        #residue = new_protein.all_residues[1]
+        residue = new_protein.all_residues[1]
         #residue = self.choose_random_amino_acid()
         decision = False
         if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
@@ -36,7 +36,7 @@ class Manipulation:
             decision = self.end_move(new_protein, residue)
         else:
             # can the choices be functions?
-            choice = random.choice(["corner", "crankshaft"])
+            choice = random.choice(["crankshaft"])
             print(choice)
             if choice == "corner":
                 decision = self.corner_move(new_protein, residue)
@@ -131,19 +131,22 @@ class Manipulation:
         if conformation.is_right_angle(res) and conformation.is_right_angle(next_residue):
             # horizontal case
             if res.coordJ == next_residue.coordJ:
-                if conformation.is_free((res.coordI, res.coordJ+2)) and conformation.is_free((next_residue.coordI,
-                                                                                              next_residue.coordJ+2)):
+                print("TRUE CRANKSHAFT")
+                if conformation.is_free(res.coordI, res.coordJ+2) and conformation.is_free(next_residue.coordI,
+                                                                                           next_residue.coordJ+2):
                     res.set_coordinates(res.coordI, res.coordJ+2)
                     next_residue.set_coordinates(next_residue.coordI, next_residue.coordJ+2)
                     self.add_frame(conformation)
+                    print("YAY CRANKSHAFT")
                     return True
             # vertical case
             elif res.coordI == next_residue.coordI:
-                if conformation.is_free((res.coordI+2, res.coordJ)) and conformation.is_free((next_residue.coordI+2,
-                                                                                              next_residue.coordJ)):
+                if conformation.is_free(res.coordI+2, res.coordJ) and conformation.is_free(next_residue.coordI+2,
+                                                                                           next_residue.coordJ):
                     res.set_coordinates(res.coordI+2, res.coordJ)
                     next_residue.set_coordinates(next_residue.coordI+2, next_residue.coordJ)
                     self.add_frame(conformation)
+                    print("YAY")
                     return True
         return False
 

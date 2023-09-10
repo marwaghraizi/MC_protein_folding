@@ -1,4 +1,5 @@
 from copy import deepcopy
+import math
 
 
 class Protein:
@@ -76,16 +77,11 @@ class Protein:
         x_prev, y_prev = previous_res.get_coordinates()
         next_res = self.get_next_residue(res)
         x_next, y_next = next_res.get_coordinates()
-        slope1 = float('inf')
-        slope2 = float('inf')
-        if x_res - x_prev != 0:
-            slope1 = (y_res - y_prev) / (x_res - x_prev)
-        if x_next - x_res != 0:
-            slope2 = (y_next - y_res) / (x_next - x_res)
-        if slope1 * slope2 == -1:
-            return True
-        else:
-            return False
+        vector1 = (x_next - x_res, y_next - y_res)
+        vector2 = (x_prev - x_res, y_prev - y_res)
+        dot_product = vector1[0] * vector2[0] + vector1[1] * vector2[1]
+        # if the dot product == 0 --> vectors form a right angle
+        return dot_product == 0
 
     # returns occupied topological positions that are not connected to the residue
     # to be cleaned?
