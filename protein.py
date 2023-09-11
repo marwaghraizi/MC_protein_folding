@@ -69,6 +69,14 @@ class Protein:
         else:
             return True
 
+    def is_valid(self):
+        idx = 1
+        for residue in self.all_residues[1:]:
+            if residue.get_coordinates() not in self.all_residues[idx - 1].get_topological_neighbors_positions():
+                return False
+            idx += 1
+        return True
+
     def copy_protein(self):
         copied_residues = []
         for residue in self.all_residues:
@@ -95,6 +103,9 @@ class Protein:
     def get_previous_residue(self, res):
         return self.all_residues[res.index-1]
 
+    def get_residue_at_idx(self, index):
+        return self.all_residues[index]
+
     def is_right_angle(self, res):
         x_res, y_res = res.get_coordinates()
         previous_res = self.get_previous_residue(res)
@@ -106,6 +117,28 @@ class Protein:
         dot_product = vector1[0] * vector2[0] + vector1[1] * vector2[1]
         # if the dot product == 0 --> vectors form a right angle
         return dot_product == 0
+
+    @staticmethod
+    def are_adjacent(first_residue_coords, second_residue_coords):
+        i1, j1 = first_residue_coords
+        i2, j2 = second_residue_coords
+
+        if abs(i1 - i2) == 1 and j1 == j2:
+            return True
+
+        if i1 == i2 and abs(j1 - j2) == 1:
+            return True
+
+        #if abs(i1 - i2) == 1 and abs(j1 - j2) == 1:
+            #return True
+
+        return False
+
+    @staticmethod
+    def are_diagonally_adjacent(first_residue_coords, second_residue_coords):
+        i1, j1 = first_residue_coords
+        i2, j2 = second_residue_coords
+        return abs(i1 - i2) == 1 and abs(j1 - j2) == 1
 
     # returns occupied topological positions that are not connected to the residue
     # to be cleaned?
