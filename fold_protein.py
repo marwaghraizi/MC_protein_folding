@@ -88,11 +88,11 @@ ALL_RESIDUES[8].coordJ = 2
 initial_protein = Protein(ALL_RESIDUES)
 manipulation = Manipulation()
 manipulation.add_frame(initial_protein)
-# manipulation.apply_monte_carlo()
+manipulation.apply_monte_carlo()
 # figure b
 # manipulation.pull_move(manipulation.all_frames[0], initial_protein.all_residues[2])
 # figure 3 c
-manipulation.pull_move(manipulation.all_frames[0], initial_protein.all_residues[7])
+# manipulation.pull_move(manipulation.all_frames[0], initial_protein.all_residues[7])
 
 manipulation.show_all_frames()
 

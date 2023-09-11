@@ -107,6 +107,8 @@ class Protein:
         return self.all_residues[index]
 
     def is_right_angle(self, res):
+        if res.index == 0 or res.index == len(self.all_residues) - 1:
+            return False
         x_res, y_res = res.get_coordinates()
         previous_res = self.get_previous_residue(res)
         x_prev, y_prev = previous_res.get_coordinates()

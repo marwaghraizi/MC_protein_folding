@@ -16,6 +16,7 @@ class Residue:
         self.coordJ = new_coordJ
 
     def get_topological_neighbors_positions(self):
-        return (self.coordI - 1, self.coordJ), (self.coordI + 1, self.coordJ), (self.coordI,  self.coordJ - 1), (self.coordI, self.coordJ + 1)
+        return (self.coordI - 1, self.coordJ), (self.coordI + 1, self.coordJ), (self.coordI,  self.coordJ - 1), \
+               (self.coordI, self.coordJ + 1)
 
 

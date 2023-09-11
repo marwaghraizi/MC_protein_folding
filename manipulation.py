@@ -1,8 +1,6 @@
 import math
 import random
 import random as rd
-from residue import Residue
-
 
 class Manipulation:
     temperature = 5
@@ -41,7 +39,7 @@ class Manipulation:
             decision = self.end_move(new_protein, residue)
         else:
             # can the choices be functions?
-            choice = random.choice([self.crankshaft_move, self.corner_move])
+            choice = random.choice([self.crankshaft_move, self.corner_move, self.pull_move])
             decision = choice(new_protein, residue)
 
 
@@ -159,14 +157,43 @@ class Manipulation:
                     return True
         return False
 
-    def pull_move(self, _conformation, _residue):
-        conformation = _conformation.copy_protein()
-        prev_residue = conformation.get_previous_residue(_residue)
-        residue = conformation.get_next_residue(prev_residue)
-        residue_i, residue_j = residue.get_coordinates()
-        # to be generalized
-        c_positions = (residue_i, residue_j + 1)
-        l_positions = (residue_i + 1, residue_j + 1)
+    @staticmethod
+    def get_adjacent(position):
+        x, y = position
+        return (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)
+
+    def pull_move(self, conformation, residue):
+        print("pull")
+        #conformation = _conformation.copy_protein()
+        prev_residue = conformation.get_previous_residue(residue)
+        #residue = conformation.get_next_residue(prev_residue)
+        next_residue = conformation.get_next_residue(residue)
+
+        residue_coords = residue.get_coordinates()
+        residue_i, residue_j = residue_coords
+
+        # L: empty lattice position which is adjacent to i+1 and diagonally adjacent to i
+        l_position_options = []
+        for position in conformation.get_empty_topological_positions(next_residue):
+            if conformation.are_diagonally_adjacent(position, residue_coords):
+                l_position_options.append(position)
+
+        # C mutually adjacent to L and i
+        if l_position_options:
+            for position in l_position_options:
+                neighbors_of_l = self.get_adjacent(position)
+                for neighbor in neighbors_of_l:
+                    if neighbor in conformation.get_empty_topological_positions(residue):
+                        l_positions = position
+                        c_positions = neighbor
+        else:
+            # if no L positions are present?
+            return False
+        print(l_positions)
+        print(c_positions)
+
+        #c_positions = (residue_i, residue_j + 1)
+        #l_positions = (residue_i + 1, residue_j + 1)
 
         # if i-1 is in C aka a corner move
         if c_positions == prev_residue.get_coordinates():
@@ -174,7 +201,7 @@ class Manipulation:
             self.add_frame(conformation)
             return True
 
-            # C is not empty
+        # C is not empty
         if not conformation.is_free(*c_positions):
             return False
 
@@ -193,7 +220,7 @@ class Manipulation:
             curr_conformation = curr_conformation.copy_protein()
             curr_residue = curr_conformation.get_residue_at_idx(j)
             # the coordinates that have just been vacated ?
-            updated_coordinates = _conformation.get_residue_at_idx(j + 2).get_coordinates()
+            updated_coordinates = conformation.get_residue_at_idx(j + 2).get_coordinates()
             curr_residue.set_coordinates(*updated_coordinates)
             # break early if valid conformation is found
             residue_i_minus_2 = curr_conformation.get_residue_at_idx(residue.index - 2)
@@ -213,6 +240,7 @@ class Manipulation:
                 aa = self.choose_random_amino_acid()
                 if aa not in amino_acids_used:
                     amino_acids_used.append(aa)
+                    print("chosen aa:" + str(aa.index))
                     move_successful = self.choose_random_move(aa)
             self.test_movement()
 
