@@ -7,9 +7,9 @@ from manipulation import Manipulation
 random.seed(5)
 polar_residues = ["E", "D", "H", "T", "S", "Y", "N", "Q", "R", "K", "H"]
 hydrophobic_residues = ["C", "W", "G", "A", "P", "I", "L", "M", "F", "V"]
-nb_iterations = 1000
 
 parser = argparse.ArgumentParser(description="Fold HP Protein")
+parser.add_argument('-h', '--help', type=str, help='Display help')
 parser.add_argument('-f', '--file', type=str, help='Protein File Path')
 parser.add_argument('-p', '--protein', help="input protein sequence in classic or HP format")
 parser.add_argument('-i', '--initial-conformation', choices=["linear", "random"], default="linear",
@@ -32,6 +32,19 @@ ALL_RESIDUES = []
 
 # if the sequence was given in HP format keep it as is if not (if not sequence.strip("HP") == "" --> translate it
 # initial conformation: linear or random (random can start with res 0 on (0,0) and place the rest randomly relative to each other
+# test cases from paper:
+## HPHPPHHPHPPHPHHPPHPH
+## HHPPHPPHPPHPPHPPHPPHPPHH
+## PPHPPHHPPPPHHPPPPHHPPPPHH
+## PPPHHPPHHPPPPPHHHHHHHPPHHPPPPHHPPHPP
+## PPHPPHHPPHHPPPPPHHHHHHHHHHPPPPPPPPHHPPHHHPPHHHHH
+
+# throw error if amino acid sequence contains invalid amino acid symbols (example: X)
+# throw error if n-iterations less than 1
+# throw error if fasta file in wrong format
+# throw error if sequence length < 2
+# input log file name to be created
+
 
 for idx, residue in enumerate(sequence):
     if residue in polar_residues:
