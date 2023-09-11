@@ -93,9 +93,9 @@ ALL_RESIDUES[8].coordI = 3
 ALL_RESIDUES[8].coordJ = 2
 
 initial_protein = Protein(ALL_RESIDUES)
-print("INITIAL PROTEIN COORDINATES:")
-print(initial_protein.coordinates)
-print()
+#print("INITIAL PROTEIN COORDINATES:")
+#print(initial_protein.coordinates)
+#print()
 manipulation = Manipulation()
 manipulation.add_frame(initial_protein)
 manipulation.apply_monte_carlo()
