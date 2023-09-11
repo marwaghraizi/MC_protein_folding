@@ -39,6 +39,30 @@ class Protein:
 
         return representation
 
+    def grid_show(self):
+        representation = ''
+        coordinates = list(map(lambda res: res.get_coordinates(), self.all_residues))
+        if len(coordinates) == 0:
+            return representation
+
+        max_x = max(coord[1] for coord in coordinates)
+        max_y = max(coord[0] for coord in coordinates)
+        # grid dimensions correspond to the largest x and y coordinates
+        grid = [[' ' for _ in range(max_x + 1)] for _ in range(max_y + 1)]
+        count = 0
+
+        for coord in coordinates:
+            y, x = coord
+            # shows the type instead of the indices
+            # grid[y][x] = self.coordinates[coord].type
+            grid[y][x] = str(count)
+            count += 1
+
+        for row in grid:
+            representation += ''.join(row) + '\n'
+
+        return representation
+
     def is_free(self, x, y):
         if (x, y) in self.coordinates:
             return False
