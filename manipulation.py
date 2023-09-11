@@ -3,8 +3,8 @@ import random
 import random as rd
 
 class Manipulation:
-    temperature = 5
-    nb_iterations = 1
+    temperature = 100
+    nb_iterations = 5
 
     def __init__(self):
         # registering all the proteins
@@ -24,27 +24,35 @@ class Manipulation:
             print(f"-------------------------")
 
     # maybe in protein
-    def choose_random_amino_acid(self):
-        random_aa = rd.choice(self.all_frames[-1].all_residues)
+    def choose_random_amino_acid(self, protein):
+        random_aa = rd.choice(protein.all_residues)
         return random_aa
 
-    def choose_random_move(self, residue):
-        new_protein = self.all_frames[-1].copy_protein()
+    def choose_random_move(self, new_protein, residue, search_space="VSHD"):
+        #new_protein = self.all_frames[-1].copy_protein()
         #residue = new_protein.all_residues[1]
         #residue = self.choose_random_amino_acid()
-        decision = False
-        if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
-            # can extremities do other moves?
-            print("end")
-            decision = self.end_move(new_protein, residue)
-        else:
-            # can the choices be functions?
-            choice = random.choice([self.crankshaft_move, self.corner_move, self.pull_move])
-            decision = choice(new_protein, residue)
 
+        if search_space == "VSHD":
+            if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
+                decision = self.end_move(new_protein, residue)
+            else:
+                # can the choices be functions?
+                choice = random.choice([self.crankshaft_move, self.corner_move])
+                decision = choice(new_protein, residue)
 
-            # test if the moves can be applied
-            # what to do if none of them work? gotta choose another amino acid (recursion?)
+        if search_space == "VSHD-pull":
+            if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
+                # can extremities do other moves?
+                decision = self.end_move(new_protein, residue)
+            else:
+                # can the choices be functions?
+                choice = random.choice([self.crankshaft_move, self.corner_move, self.pull_move])
+                decision = choice(new_protein, residue)
+
+        if search_space == "pull":
+            decision = self.pull_move(new_protein, residue)
+
         return decision
 
     # if the move was not energetically favorable and the probability was low --> need to remove it
@@ -71,20 +79,23 @@ class Manipulation:
     # moves (return true or false)
     def corner_move(self, conformation, res):
         # if i-1 and i+1 share an available position --> move i to this position
+        print(conformation.coordinates)
+        print("reside of interest:")
+        print(res)
+
         previous_residue = conformation.get_previous_residue(res)
         next_residue = conformation.get_next_residue(res)
         previous_residue_neighbors = conformation.get_empty_topological_positions(previous_residue)
         next_residue_neighbors = conformation.get_empty_topological_positions(next_residue)
-        # should account for empty lists??
+
         if previous_residue_neighbors:
             for neighbor in previous_residue_neighbors:
                 if neighbor in next_residue_neighbors:
                     #print("YAY")
                     new_i, new_j = neighbor
-                    res.set_coordinates(new_i, new_j)
+                    conformation.set_coordinates(res, new_i, new_j)
                     self.add_frame(conformation)
                     return True
-            #print("did not work")
             return False
 
     def end_move(self, conformation, res):
@@ -93,6 +104,9 @@ class Manipulation:
         # get free topological neighbors of the neighbor
         # there should be two --> randomly choose one
         # for the end move we have two possible positions --> random choice
+        # print(conformation.show())
+        # print(conformation.coordinates)
+        # print("index " + str(res.index))
         if res.index == 0 or res.index == len(conformation.all_residues) - 1:
             pass
         else:
@@ -102,14 +116,18 @@ class Manipulation:
             neighbor = conformation.all_residues[1]
         else:
             neighbor = conformation.all_residues[-2]
+        #print("neighbor:")
+        #print(neighbor.get_coordinates())
 
-        topological_positions = neighbor.get_topological_neighbors_positions()
-        options = []
+        topological_positions = conformation.get_empty_topological_positions(neighbor)
+        options = topological_positions
+        #print("options are:")
+        #print(options)
 
         # choose topological positions of the neighbor that are not occupied
-        for position in topological_positions:
-            if position not in conformation.coordinates:
-                options.append(position)
+        #for position in topological_positions:
+            #if position not in conformation.coordinates:
+                #options.append(position)
 
         # case of no available empty positions
         if len(options) == 0:
@@ -119,13 +137,23 @@ class Manipulation:
         # if the probability is favorable or if we have only one available option
         if probability < 0.5 or len(options) == 1:
             new_i, new_j = options[0]
-            res.set_coordinates(new_i, new_j)
+            #print(new_i, new_j)
+            conformation.set_coordinates(res, new_i, new_j)
             self.add_frame(conformation)
+            #print("end")
+            #print(conformation.coordinates)
+            #print(conformation.show())
+            print("end move over")
             return True
         else:
             new_i, new_j = options[1]
-            res.set_coordinates(new_i, new_j)
+            #print(new_i, new_j)
+            conformation.set_coordinates(res, new_i, new_j)
             self.add_frame(conformation)
+            #print(conformation.coordinates)
+            #print("end")
+            #print(conformation.show())
+            print("end move over")
             return True
 
     def crankshaft_move(self, conformation, res):
@@ -141,19 +169,20 @@ class Manipulation:
                 # checking if the 180 flip positions are available
                 if conformation.is_free(res.coordI, res.coordJ + 2) and conformation.is_free(next_residue.coordI,
                                                                                              next_residue.coordJ + 2):
-                    res.set_coordinates(res.coordI, res.coordJ + 2)
-                    next_residue.set_coordinates(next_residue.coordI, next_residue.coordJ+2)
+                    conformation.set_coordinates(res, res.coordI, res.coordJ + 2)
+                    conformation.set_coordinates(next_residue, next_residue.coordI, next_residue.coordJ+2)
                     self.add_frame(conformation)
-                    print("YAY CRANKSHAFT")
+                    print("YAY CRANKSHAFT" + " index" + str(res.index))
                     return True
             # vertical case
             elif res.coordI == next_residue.coordI:
                 if conformation.is_free(res.coordI + 2, res.coordJ) and conformation.is_free(next_residue.coordI + 2,
                                                                                              next_residue.coordJ):
-                    res.set_coordinates(res.coordI + 2, res.coordJ)
-                    next_residue.set_coordinates(next_residue.coordI + 2, next_residue.coordJ)
+                    conformation.set_coordinates(res, res.coordI + 2, res.coordJ)
+                    conformation.set_coordinates(next_residue, next_residue.coordI + 2, next_residue.coordJ)
                     self.add_frame(conformation)
-                    print("YAY CRANKSHAFT")
+                    print("YAY CRANKSHAFT" + " index" + str(res.index))
+                    print("index" + str(res.index))
                     return True
         return False
 
@@ -198,6 +227,7 @@ class Manipulation:
         # if i-1 is in C aka a corner move
         if c_positions == prev_residue.get_coordinates():
             residue.set_coordinates(*l_positions)
+            conformation.update_coordinates()
             self.add_frame(conformation)
             return True
 
@@ -207,6 +237,7 @@ class Manipulation:
 
         prev_residue.set_coordinates(*c_positions)
         residue.set_coordinates(*l_positions)
+        conformation.update_coordinates()
 
         residue_i_minus_2 = conformation.get_previous_residue(prev_residue)
         # conformation is considered valid if i-2 is next to C which is now occupied by i-1
@@ -222,6 +253,7 @@ class Manipulation:
             # the coordinates that have just been vacated ?
             updated_coordinates = conformation.get_residue_at_idx(j + 2).get_coordinates()
             curr_residue.set_coordinates(*updated_coordinates)
+            conformation.update_coordinates()
             # break early if valid conformation is found
             residue_i_minus_2 = curr_conformation.get_residue_at_idx(residue.index - 2)
             if curr_conformation.are_adjacent(residue_i_minus_2.get_coordinates(), c_positions) and \
@@ -231,24 +263,15 @@ class Manipulation:
         self.add_frame(curr_conformation)
         return True
 
-    def apply_monte_carlo(self):
+    def apply_monte_carlo(self, search_space="VSHD"):
         for i in range(self.nb_iterations):
-            print(i)
+            print("iteration: " + str(i))
             move_successful = False
             amino_acids_used = []
             while move_successful is False and len(amino_acids_used) < self.protein_length:
-                aa = self.choose_random_amino_acid()
+                new_protein = self.all_frames[-1].copy_protein()
+                aa = self.choose_random_amino_acid(new_protein)
                 if aa not in amino_acids_used:
                     amino_acids_used.append(aa)
-                    print("chosen aa:" + str(aa.index))
-                    move_successful = self.choose_random_move(aa)
+                    move_successful = self.choose_random_move(new_protein, aa, search_space)
             self.test_movement()
-
-    def apply_MC_VSHD(self):
-        return False
-
-    def apply_MC_VSHD_pull(self):
-        return False
-
-    def apply_MC_pull(self):
-        return False

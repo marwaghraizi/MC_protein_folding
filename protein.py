@@ -13,6 +13,13 @@ class Protein:
         # is this legal?
         self.energy = self.calculate_energy()
 
+    def set_coordinates(self, residue, new_x, new_y):
+        coordinates = (new_x, new_y)
+        old_coords = residue.get_coordinates()
+        residue.set_coordinates(new_x, new_y)
+        del self.coordinates[old_coords]
+        self.coordinates[coordinates] = residue
+
     @staticmethod
     def describe_direction(x1, y1, x2, y2):
         i1, j1 = x1, y1

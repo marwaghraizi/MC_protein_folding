@@ -9,8 +9,15 @@ polar_residues = ["E", "D", "H", "T", "S", "Y", "N", "Q", "R", "K", "H"]
 hydrophobic_residues = ["C", "W", "G", "A", "P", "I", "L", "M", "F", "V"]
 nb_iterations = 1000
 
-parser = argparse.ArgumentParser(description="Fold Protein")
-parser.add_argument('-f', '--file', metavar='protein', type=str, help='Protein File Path')
+parser = argparse.ArgumentParser(description="Fold HP Protein")
+parser.add_argument('-f', '--file', type=str, help='Protein File Path')
+parser.add_argument('-p', '--protein', help="input protein sequence in classic or HP format")
+parser.add_argument('-i', '--initial-conformation', choices=["linear", "random"], default="linear",
+                    help='initial conformation of the protein: linear or randomized placements')
+parser.add_argument('-n', '--n-iterations', type=int, default=1000, help="number of search iterations")
+parser.add_argument('-t', '--temperature', type=float, default=100.0,
+                    help='search temperature: higher temperatures increases the probability of '
+                         'accepting energetically unfavorable moves')
 args = parser.parse_args()
 
 protein_file = args.file
@@ -86,6 +93,9 @@ ALL_RESIDUES[8].coordI = 3
 ALL_RESIDUES[8].coordJ = 2
 
 initial_protein = Protein(ALL_RESIDUES)
+print("INITIAL PROTEIN COORDINATES:")
+print(initial_protein.coordinates)
+print()
 manipulation = Manipulation()
 manipulation.add_frame(initial_protein)
 manipulation.apply_monte_carlo()
