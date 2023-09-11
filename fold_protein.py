@@ -29,7 +29,9 @@ with open(protein_file, "r") as filein:
 
 HP_sequence = ""
 ALL_RESIDUES = []
-# set of tuples for hydrophobic contacts
+
+# if the sequence was given in HP format keep it as is if not (if not sequence.strip("HP") == "" --> translate it
+# initial conformation: linear or random (random can start with res 0 on (0,0) and place the rest randomly relative to each other
 
 for idx, residue in enumerate(sequence):
     if residue in polar_residues:
@@ -106,12 +108,6 @@ manipulation.apply_monte_carlo()
 
 manipulation.show_all_frames()
 
-
-
-#manipulation = Manipulation()
-#manipulation.add_frame(initial_protein)
-#manipulation.apply_monte_carlo()
-#manipulation.show_all_frames()
 
 
 

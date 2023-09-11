@@ -2,6 +2,7 @@ import math
 import random
 import random as rd
 
+
 class Manipulation:
     temperature = 100
     nb_iterations = 10
@@ -37,16 +38,14 @@ class Manipulation:
             if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
                 decision = self.end_move(new_protein, residue)
             else:
-                # can the choices be functions?
                 choice = random.choice([self.crankshaft_move, self.corner_move])
                 decision = choice(new_protein, residue)
 
         if search_space == "VSHD-pull":
+            # if i have time: generate a user input probability of using pull in the VSHD-pull search neighborhood
             if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
-                # can extremities do other moves?
                 decision = self.end_move(new_protein, residue)
             else:
-                # can the choices be functions?
                 choice = random.choice([self.crankshaft_move, self.corner_move, self.pull_move])
                 decision = choice(new_protein, residue)
 
@@ -87,7 +86,6 @@ class Manipulation:
         print("its index is:" + str(res.index))
         print(f"its coordinates are: {res.get_coordinates()}")
         print(conformation.show())
-
 
         previous_residue = conformation.get_previous_residue(res)
         next_residue = conformation.get_next_residue(res)
@@ -223,7 +221,13 @@ class Manipulation:
         return (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)
 
     def pull_move(self, conformation, residue):
-        print("PULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+        print("pull is happening")
+        print(conformation.coordinates)
+        print("residue of interest:")
+        print(residue)
+        print("its index is:" + str(residue.index))
+        print(f"its coordinates are: {residue.get_coordinates()}")
+        print(conformation.show())
         #conformation = _conformation.copy_protein()
         prev_residue = conformation.get_previous_residue(residue)
         #residue = conformation.get_next_residue(prev_residue)
@@ -249,6 +253,7 @@ class Manipulation:
         else:
             # if no L positions are present?
             return False
+
         print(l_positions)
         print(c_positions)
 
@@ -259,6 +264,7 @@ class Manipulation:
         if c_positions == prev_residue.get_coordinates():
             conformation.set_coordinates(residue, *l_positions)
             self.add_frame(conformation)
+            print(conformation.show())
             return True
 
         # C is not empty
@@ -272,6 +278,7 @@ class Manipulation:
         # conformation is considered valid if i-2 is next to C which is now occupied by i-1
         if conformation.are_adjacent(residue_i_minus_2.get_coordinates(), c_positions):
             self.add_frame(conformation)
+            print(conformation.show())
             return True
 
         j = residue.index - 2
@@ -289,6 +296,7 @@ class Manipulation:
                 break
             j -= 1
         self.add_frame(curr_conformation)
+        print(conformation.show())
         return True
 
     def apply_monte_carlo(self, search_space="VSHD-pull"):
