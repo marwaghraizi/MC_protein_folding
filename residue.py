@@ -27,14 +27,14 @@ class Residue:
 
     def __init__(self, hp_type, index):
         """
-        Constructs all the necessary attributes for the person object.
+        Constructs all the necessary attributes for the residue object.
 
         Parameters
         ----------
             hp_type : char
-                first name of the person
+                Polarity of the residue: H for hydrophobic and P for polar.
             index : int
-                family name of the person
+                index of the residue within the protein conformation.
         """
         self.HP_type = hp_type
         self.index = index
