@@ -28,7 +28,7 @@ class Manipulation:
             print(f"-------------------------")
 
     @staticmethod
-    def choose_random_amino_acid(self, protein):
+    def choose_random_amino_acid(protein):
         random_aa = rd.choice(protein.all_residues)
         return random_aa
 
@@ -51,10 +51,11 @@ class Manipulation:
             else:
                 probability = random.random()
                 if probability < pull_proba:
-                    choice = self.pull_move(new_protein, residue)
+                    #choice = self.pull_move(new_protein, residue)
+                    decision = self.pull_move(new_protein, residue)
                 else:
                     choice = random.choice([self.crankshaft_move, self.corner_move])
-                decision = choice(new_protein, residue)
+                    decision = choice(new_protein, residue)
 
         if search_space == "pull":
             decision = self.pull_move(new_protein, residue)
@@ -67,6 +68,16 @@ class Manipulation:
         del self.frame_caused_by_move[-1]
 
     def test_movement(self):
+        """
+        Tests the last protein added to the frames. If its energy increases with respect to the previous one,
+        the move is considered successful. Otherwise, a probability is calculated based on the temperature to
+        accept or reject an energetically unfavorable move.
+
+        Output
+        -------
+
+
+        """
         current_energy = self.all_frames[-1].calculate_energy()
         previous_energy = self.all_frames[-2].calculate_energy()
         if current_energy <= previous_energy:
@@ -85,15 +96,15 @@ class Manipulation:
 
     # moves (return true or false)
     def corner_move(self, conformation, res):
-        print()
+        #print()
         # if i-1 and i+1 share an available position --> move i to this position
-        print("corner is happening")
-        print(conformation.coordinates)
-        print("residue of interest:")
-        print(res)
-        print("its index is:" + str(res.index))
-        print(f"its coordinates are: {res.get_coordinates()}")
-        print(conformation.show())
+        #print("corner is happening")
+        #print(conformation.coordinates)
+        #print("residue of interest:")
+        #print(res)
+        #print("its index is:" + str(res.index))
+        #print(f"its coordinates are: {res.get_coordinates()}")
+        #print(conformation.show())
 
         previous_residue = conformation.get_previous_residue(res)
         next_residue = conformation.get_next_residue(res)
@@ -107,7 +118,7 @@ class Manipulation:
                     new_i, new_j = neighbor
                     conformation.set_coordinates(res, new_i, new_j)
                     self.add_frame(conformation, 'corner move')
-                    print(conformation.show())
+                    #print(conformation.show())
                     return True
             print("corner does not work here")
             return False
@@ -176,12 +187,12 @@ class Manipulation:
         print()
         if len(conformation.all_residues) < 4:
             return False
-        print("crankshaft is happening")
-        print("residue of interest:")
-        print(res)
-        print("its index is:" + str(res.index))
-        print(f"its coordinates are: {res.get_coordinates()}")
-        print(conformation.show())
+        #print("crankshaft is happening")
+        #print("residue of interest:")
+        #print(res)
+        #print("its index is:" + str(res.index))
+        #print(f"its coordinates are: {res.get_coordinates()}")
+        #print(conformation.show())
         # checking the U shape
         next_residue = conformation.get_next_residue(res)
         if conformation.is_right_angle(res) and conformation.is_right_angle(next_residue):
@@ -194,21 +205,26 @@ class Manipulation:
                     residue_i_plus_2 = conformation.get_next_residue(next_residue)
                     prev_residue = conformation.get_previous_residue(res)
                     if conformation.are_adjacent(residue_i_plus_2.get_coordinates(), prev_residue.get_coordinates()):
-                        print(f"i+2 coordinates {residue_i_plus_2.get_coordinates()}")
-                        print(f"i-1 coordinates {prev_residue.get_coordinates()}")
+                        #print(f"i+2 coordinates {residue_i_plus_2.get_coordinates()}")
+                        #print(f"i-1 coordinates {prev_residue.get_coordinates()}")
                         # flip up
                         if res.coordJ < prev_residue.coordJ:
-                            conformation.set_coordinates(res, res.coordI, res.coordJ + 2)
-                            conformation.set_coordinates(next_residue, next_residue.coordI, next_residue.coordJ + 2)
+                            if conformation.is_free(res.coordI, res.coordJ + 2) and conformation.is_free(next_residue.coordI, next_residue.coordJ + 2):
+                                conformation.set_coordinates(res, res.coordI, res.coordJ + 2)
+                                conformation.set_coordinates(next_residue, next_residue.coordI, next_residue.coordJ + 2)
                         else:
                             # flip down
-                            conformation.set_coordinates(res, res.coordI, res.coordJ - 2)
-                            conformation.set_coordinates(next_residue, next_residue.coordI, next_residue.coordJ - 2)
+                            if conformation.is_free(res.coordI, res.coordJ - 2) and conformation.is_free(
+                                    next_residue.coordI, next_residue.coordJ - 2):
+                                conformation.set_coordinates(res, res.coordI, res.coordJ - 2)
+                                conformation.set_coordinates(next_residue, next_residue.coordI, next_residue.coordJ - 2)
+                            else:
+                                return False
                         self.add_frame(conformation, 'crankshaft horizontal')
-                        print(conformation.coordinates)
-                        for res in conformation.all_residues:
-                            print(f"residue {res.index} {res} with coordinates {res.get_coordinates()}")
-                        print(conformation.show())
+                        #print(conformation.coordinates)
+                        #for res in conformation.all_residues:
+                            #print(f"residue {res.index} {res} with coordinates {res.get_coordinates()}")
+                        #print(conformation.show())
                         return True
             # vertical case
             elif res.coordI == next_residue.coordI:
@@ -219,17 +235,23 @@ class Manipulation:
                     if conformation.are_adjacent(residue_i_plus_2.get_coordinates(), prev_residue.get_coordinates()):
                         # flip right
                         if res.coordI < prev_residue.coordI:
-                            conformation.set_coordinates(res, res.coordI + 2, res.coordJ)
-                            conformation.set_coordinates(next_residue, next_residue.coordI + 2, next_residue.coordJ + 2)
+                            if conformation.is_free(res.coordI + 2, res.coordJ) and conformation.is_free(
+                                    next_residue.coordI + 2, next_residue.coordJ + 2):
+                                conformation.set_coordinates(res, res.coordI + 2, res.coordJ)
+                                conformation.set_coordinates(next_residue, next_residue.coordI + 2, next_residue.coordJ + 2)
                         else:
                             # flip left
-                            conformation.set_coordinates(res, res.coordI - 2, res.coordJ)
-                            conformation.set_coordinates(next_residue, next_residue.coordI - 2, next_residue.coordJ)
+                            if conformation.is_free(res.coordI - 2, res.coordJ) and conformation.is_free(
+                                    next_residue.coordI - 2, next_residue.coordJ):
+                                conformation.set_coordinates(res, res.coordI - 2, res.coordJ)
+                                conformation.set_coordinates(next_residue, next_residue.coordI - 2, next_residue.coordJ)
+                            else:
+                                return False
                         self.add_frame(conformation, 'crankshaft vertical')
                         print(conformation.coordinates)
-                        for res in conformation.all_residues:
-                            print(f"residue {res.index} {res} with coordinates {res.get_coordinates()}")
-                        print(conformation.show())
+                        #for res in conformation.all_residues:
+                            #print(f"residue {res.index} {res} with coordinates {res.get_coordinates()}")
+                        #print(conformation.show())
                         return True
         print("crankshaft does not work here")
         return False
@@ -341,4 +363,5 @@ class Manipulation:
                 if aa not in amino_acids_used:
                     amino_acids_used.append(aa)
                     move_successful = self.choose_random_move(new_protein, aa, search_space)
+                print(f'amino acid is {aa.index}')
             self.test_movement()
