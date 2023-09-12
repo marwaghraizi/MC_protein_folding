@@ -287,7 +287,6 @@ class Manipulation:
         # conformation is considered valid if i-2 is next to C which is now occupied by i-1
         if conformation.are_adjacent(residue_i_minus_2.get_coordinates(), c_positions):
             self.add_frame(conformation,  'pull w/ 1 step')
-            #print(conformation.show())
             return True
 
         j = residue.index - 2
