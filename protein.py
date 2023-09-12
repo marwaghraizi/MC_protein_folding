@@ -206,17 +206,13 @@ class Protein:
         from graphviz import Digraph
 
         g = Digraph('G', engine="neato", filename=file_name, format='png')
-        g.attr(size=str(len(self.all_residues)))
+        g.attr(size=str(len(self.all_residues)), label="test title", labelfontsize="18.0", labelloc="t")
 
-        #for coords, residue in self.coordinates.items():
-            #color = 'blue' if residue.type == 'H' else 'red'
-            #g.node(f"{str(residue.index)} - {residue.type}", pos=f"{coords[0]},{coords[1]}!", fillcolor=color,
-                   #style='filled')
         for residue in self.all_residues:
             coords = residue.get_coordinates()
             color = 'blue' if residue.type == 'H' else 'red'
             g.node(f"{str(residue.index)}", pos=f"{coords[0]},{coords[1]}!", fillcolor=color, style='filled')
         for i in range(1, len(self.all_residues)):
-            g.edge(f"{str(i - 1)} - {self.all_residues[i - 1].type}", f"{str(i)} - {self.all_residues[i].type}")
-            g.render()
+            g.edge(f"{str(i - 1)}", f"{str(i)}")
+        g.render()
 

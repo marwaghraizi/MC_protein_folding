@@ -1,6 +1,7 @@
 import math
 import random
 import random as rd
+from tqdm import tqdm
 
 
 class Manipulation:
@@ -33,10 +34,6 @@ class Manipulation:
         return random_aa
 
     def choose_random_move(self, new_protein, residue, search_space="VSHD-pull", pull_proba=0.5):
-        #new_protein = self.all_frames[-1].copy_protein()
-        #residue = new_protein.all_residues[1]
-        #residue = self.choose_random_amino_acid()
-
         if search_space == "VSHD":
             if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
                 decision = self.end_move(new_protein, residue)
@@ -81,15 +78,18 @@ class Manipulation:
         current_energy = self.all_frames[-1].calculate_energy()
         previous_energy = self.all_frames[-2].calculate_energy()
         if current_energy <= previous_energy:
-            print("Move was successful")
+            #print("Move was successful")
+            pass
         else:
             energy_difference = current_energy - previous_energy
             probability = math.exp(energy_difference/self.temperature)
             random_number = rd.random()
             if random_number < probability:
-                print("Unfavorable move was accepted")
+                #print("Unfavorable move was accepted")
+                pass
             else:
-                print("Move was not accepted")
+                #print("Move was not accepted")
+                pass
                 self.undo_move()
     # apply the move and return true if it was successful
     # check if a position is empty
@@ -114,18 +114,18 @@ class Manipulation:
         if previous_residue_neighbors:
             for neighbor in previous_residue_neighbors:
                 if neighbor in next_residue_neighbors:
-                    print(neighbor)
+                    #print(neighbor)
                     new_i, new_j = neighbor
                     conformation.set_coordinates(res, new_i, new_j)
                     self.add_frame(conformation, 'corner move')
                     #print(conformation.show())
                     return True
-            print("corner does not work here")
+            #print("corner does not work here")
             return False
 
     def end_move(self, conformation, res):
-        print()
-        print("end is happening")
+        #print()
+        #print("end is happening")
         # ensure that its an extremity (redundant)
         # get neighbor (second or before last residue)
         # get free topological neighbors of the neighbor
@@ -170,7 +170,7 @@ class Manipulation:
             #print("end")
             #print(conformation.coordinates)
             #print(conformation.show())
-            print("end move over")
+            #print("end move over")
             return True
         else:
             new_i, new_j = options[1]
@@ -180,11 +180,11 @@ class Manipulation:
             #print(conformation.coordinates)
             #print("end")
             #print(conformation.show())
-            print("end move over")
+            #print("end move over")
             return True
 
     def crankshaft_move(self, conformation, res):
-        print()
+        #print()
         if len(conformation.all_residues) < 4:
             return False
         #print("crankshaft is happening")
@@ -248,12 +248,12 @@ class Manipulation:
                             else:
                                 return False
                         self.add_frame(conformation, 'crankshaft vertical')
-                        print(conformation.coordinates)
+                        #print(conformation.coordinates)
                         #for res in conformation.all_residues:
                             #print(f"residue {res.index} {res} with coordinates {res.get_coordinates()}")
                         #print(conformation.show())
                         return True
-        print("crankshaft does not work here")
+        #print("crankshaft does not work here")
         return False
 
     @staticmethod
@@ -348,13 +348,13 @@ class Manipulation:
                 break
             j -= 1
         self.add_frame(curr_conformation, 'pull w/ n steps')
-        print(conformation.show())
+        #print(conformation.show())
         return True
 
     def apply_monte_carlo(self, search_space="VSHD-pull"):
-        for i in range(self.n_iterations):
-            print()
-            print("-----------ITERATION------------: " + str(i))
+        for i in tqdm(range(self.n_iterations), desc="Progress"):
+            #print()
+            #print("-----------ITERATION------------: " + str(i))
             move_successful = False
             amino_acids_used = []
             while move_successful is False and len(amino_acids_used) < self.protein_length:
@@ -363,5 +363,5 @@ class Manipulation:
                 if aa not in amino_acids_used:
                     amino_acids_used.append(aa)
                     move_successful = self.choose_random_move(new_protein, aa, search_space)
-                print(f'amino acid is {aa.index}')
+                #print(f'amino acid is {aa.index}')
             self.test_movement()
