@@ -52,17 +52,23 @@ class Protein:
         if len(coordinates) == 0:
             return representation
 
-        max_x = max(coord[1] for coord in coordinates)
-        max_y = max(coord[0] for coord in coordinates)
-        # grid dimensions correspond to the largest x and y coordinates
-        grid = [[' ' for _ in range(max_x + 1)] for _ in range(max_y + 1)]
+        min_x = min(coord[0] for coord in coordinates)
+        max_x = max(coord[0] for coord in coordinates)
+        min_y = min(coord[1] for coord in coordinates)
+        max_y = max(coord[1] for coord in coordinates)
+
+        grid_width = max_x - min_x + 1
+        grid_height = max_y - min_y + 1
+
+        grid = [[' ' for _ in range(grid_width)] for _ in range(grid_height)]
+
         count = 0
 
         for coord in coordinates:
-            y, x = coord
-            # shows the type instead of the indices
-            # grid[y][x] = self.coordinates[coord].type
-            grid[y][x] = str(count)
+            x, y = coord
+            grid_y = y - min_y
+            grid_x = x - min_x
+            grid[grid_y][grid_x] = str(count)
             count += 1
 
         for row in grid:
@@ -193,3 +199,17 @@ class Protein:
         # if i do this then no need to attribute the method in the constructor so which is it?
         self.energy = -len(hydrophobic_contacts)
         return -len(hydrophobic_contacts)
+
+    def graph_show(self, file_name):
+        from graphviz import Digraph
+
+        g = Digraph('G', engine="neato", filename=file_name, format='png')
+        g.attr(size=str(len(self.all_residues)))
+        for coords, residue in self.coordinates.items():
+            color = 'blue' if residue.type == 'H' else 'red'
+            g.node(f"{str(residue.index)} - {residue.type}", pos=f"{coords[0]},{coords[1]}!", fillcolor=color,
+                   style='filled')
+        for i in range(1, len(self.all_residues)):
+            g.edge(f"{str(i - 1)} - {self.all_residues[i - 1].type}", f"{str(i)} - {self.all_residues[i].type}")
+            g.render()
+
