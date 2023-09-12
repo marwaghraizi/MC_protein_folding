@@ -7,76 +7,16 @@ class Protein:
     def __init__(self, residues):
         self.all_residues = residues
         self.coordinates = {}
-        # will it be updated?
         for residue in residues:
             self.coordinates[(residue.coordI, residue.coordJ)] = residue
-        # is this legal?
         self.energy = self.calculate_energy()
 
     def set_coordinates(self, residue, new_x, new_y):
         coordinates = (new_x, new_y)
         old_coords = residue.get_coordinates()
         residue.set_coordinates(new_x, new_y)
-        if coordinates is None:
-            print("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
         del self.coordinates[old_coords]
         self.coordinates[coordinates] = residue
-
-    @staticmethod
-    def describe_direction(x1, y1, x2, y2):
-        i1, j1 = x1, y1
-        i2, j2 = x2, y2
-        if j1 < j2:
-            return "U"
-        elif j1 > j2:
-            return "D"
-        elif i1 < i2:
-            return "R"
-        elif i1 > i2:
-            return "L"
-
-        return None
-
-    def show(self):
-        representation = ""
-        for i in range(len(self.all_residues)-1):
-            i1, j1 = self.all_residues[i].get_coordinates()
-            i2, j2 = self.all_residues[i+1].get_coordinates()
-            direction = self.describe_direction(i1, j1, i2, j2)
-            if direction:
-                representation += direction
-
-        return representation
-
-    def grid_show(self):
-        representation = ''
-        coordinates = list(map(lambda res: res.get_coordinates(), self.all_residues))
-        if len(coordinates) == 0:
-            return representation
-
-        min_x = min(coord[0] for coord in coordinates)
-        max_x = max(coord[0] for coord in coordinates)
-        min_y = min(coord[1] for coord in coordinates)
-        max_y = max(coord[1] for coord in coordinates)
-
-        grid_width = max_x - min_x + 1
-        grid_height = max_y - min_y + 1
-
-        grid = [[' ' for _ in range(grid_width)] for _ in range(grid_height)]
-
-        count = 0
-
-        for coord in coordinates:
-            x, y = coord
-            grid_y = y - min_y
-            grid_x = x - min_x
-            grid[grid_y][grid_x] = str(count)
-            count += 1
-
-        for row in grid:
-            representation += ''.join(row) + '\n'
-
-        return representation
 
     def is_free(self, x, y):
         if (x, y) in self.coordinates:
@@ -190,13 +130,13 @@ class Protein:
     def calculate_energy(self):
         hydrophobic_contacts = set()
         for res in self.all_residues:
-            if res.type == "H":
+            if res.HP_type == "H":
                 occupied_neighbors = self.get_occupied_topological_neighbors(res)
                 # if occupied neighbors exist
                 if occupied_neighbors:
                     #neighbors = self.get_occupied_topological_neighbors(res)
                     for neighbor in occupied_neighbors:
-                        if neighbor.type == "H" and (neighbor.index, res.index) not in hydrophobic_contacts:
+                        if neighbor.HP_type == "H" and (neighbor.index, res.index) not in hydrophobic_contacts:
                             hydrophobic_contacts.add((res.index, neighbor.index))
         # if i do this then no need to attribute the method in the constructor so which is it?
         self.energy = -len(hydrophobic_contacts)
@@ -210,9 +150,65 @@ class Protein:
 
         for residue in self.all_residues:
             coords = residue.get_coordinates()
-            color = 'blue' if residue.type == 'H' else 'red'
+            color = 'blue' if residue.HP_type == 'H' else 'red'
             g.node(f"{str(residue.index)}", pos=f"{coords[0]},{coords[1]}!", fillcolor=color, style='filled')
         for i in range(1, len(self.all_residues)):
             g.edge(f"{str(i - 1)}", f"{str(i)}")
         g.render()
+
+    @staticmethod
+    def describe_direction(x1, y1, x2, y2):
+        i1, j1 = x1, y1
+        i2, j2 = x2, y2
+        if j1 < j2:
+            return "U"
+        elif j1 > j2:
+            return "D"
+        elif i1 < i2:
+            return "R"
+        elif i1 > i2:
+            return "L"
+
+        return None
+
+    def show(self):
+        representation = ""
+        for i in range(len(self.all_residues) - 1):
+            i1, j1 = self.all_residues[i].get_coordinates()
+            i2, j2 = self.all_residues[i + 1].get_coordinates()
+            direction = self.describe_direction(i1, j1, i2, j2)
+            if direction:
+                representation += direction
+
+        return representation
+
+    def grid_show(self):
+        representation = ''
+        coordinates = list(map(lambda res: res.get_coordinates(), self.all_residues))
+        if len(coordinates) == 0:
+            return representation
+
+        min_x = min(coord[0] for coord in coordinates)
+        max_x = max(coord[0] for coord in coordinates)
+        min_y = min(coord[1] for coord in coordinates)
+        max_y = max(coord[1] for coord in coordinates)
+
+        grid_width = max_x - min_x + 1
+        grid_height = max_y - min_y + 1
+
+        grid = [[' ' for _ in range(grid_width)] for _ in range(grid_height)]
+
+        count = 0
+
+        for coord in coordinates:
+            x, y = coord
+            grid_y = y - min_y
+            grid_x = x - min_x
+            grid[grid_y][grid_x] = str(count)
+            count += 1
+
+        for row in grid:
+            representation += ''.join(row) + '\n'
+
+        return representation
 
