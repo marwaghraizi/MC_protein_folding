@@ -21,7 +21,10 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--search-space', choices=["VSHD", "VSHD-pull", 'pull'], default='VSHD-pull')
     parser.add_argument('--display-grid-all', action='store_true', help='print out all of the frames')
     parser.add_argument('--display-grid', action='store_true', help='print out final frame')
-    parser.add_argument('--display-graph', action='store_true', help='create png of final frame. Note: you need to install graphviz separately https://www.graphviz.org/download/')
+    parser.add_argument('--display-graph', action='store_true', help='create png of final frame. Note: you need to '
+                                                                     'install graphviz separately https://www.graphviz.org/download/')
+    # add proba pull
+    # add optimal or final displau
     parser.set_defaults(display_grid=False)
     args = parser.parse_args()
     protein_file = args.file
