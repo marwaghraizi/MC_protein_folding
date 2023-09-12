@@ -1,5 +1,4 @@
 from copy import deepcopy
-import math
 
 
 class Protein:
@@ -37,9 +36,9 @@ class Protein:
             Returns the coordinates of the empty positions surrounding a given residue.
         is_right_angle(res):
             Checks if a given residue forms a right angle with its previous and next residue.
-        are_adjacent(first_residue_coords, second_residue_coords):
+        are_adjacent(first_residue_coordinates, second_residue_coordinates):
             Checks if two residues are adjacent to each other.
-        are_diagonally_adjacent(first_residue_coords, second_residue_coords):
+        are_diagonally_adjacent(first_residue_coordinates, second_residue_coordinates):
             Checks if two residues are diagonally adjacent to each other.
         is_valid():
             Checks if a conformation is valid if all residues are adjacent to their previous residue.
@@ -75,9 +74,9 @@ class Protein:
         """Updates the coordinate of the residue, the overall conformation and the energy
         given a residue and new coordinates"""
         coordinates = (new_x, new_y)
-        old_coords = residue.get_coordinates()
+        old_coordinates = residue.get_coordinates()
         residue.set_coordinates(new_x, new_y)
-        del self.coordinates[old_coords]
+        del self.coordinates[old_coordinates]
         self.coordinates[coordinates] = residue
         self.energy = self.calculate_energy()
 
@@ -185,10 +184,10 @@ class Protein:
         return dot_product == 0
 
     @staticmethod
-    def are_adjacent(first_residue_coords, second_residue_coords):
+    def are_adjacent(first_residue_coordinates, second_residue_coordinates):
         """Checks if two residues are adjacent to each other."""
-        i1, j1 = first_residue_coords
-        i2, j2 = second_residue_coords
+        i1, j1 = first_residue_coordinates
+        i2, j2 = second_residue_coordinates
 
         if abs(i1 - i2) == 1 and j1 == j2:
             return True
@@ -199,10 +198,10 @@ class Protein:
         return False
 
     @staticmethod
-    def are_diagonally_adjacent(first_residue_coords, second_residue_coords):
+    def are_diagonally_adjacent(first_residue_coordinates, second_residue_coordinates):
         """Checks if two residues are diagonally adjacent to each other."""
-        i1, j1 = first_residue_coords
-        i2, j2 = second_residue_coords
+        i1, j1 = first_residue_coordinates
+        i2, j2 = second_residue_coordinates
         return abs(i1 - i2) == 1 and abs(j1 - j2) == 1
 
     def is_valid(self):
@@ -306,9 +305,9 @@ class Protein:
 
         # creating the nodes by looping over the residues and taking into account their HP_type and their coordinates
         for residue in self.all_residues:
-            coords = residue.get_coordinates()
+            coordinates = residue.get_coordinates()
             color = 'blue' if residue.HP_type == 'H' else 'red'
-            g.node(f"{str(residue.index)}", pos=f"{coords[0]},{coords[1]}!", fillcolor=color, style='filled')
+            g.node(f"{str(residue.index)}", pos=f"{coordinates[0]},{coordinates[1]}!", fillcolor=color, style='filled')
         # creating the edges directed from the previous residue to the current one
         for i in range(1, len(self.all_residues)):
             g.edge(f"{str(i - 1)}", f"{str(i)}")
