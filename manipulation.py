@@ -188,9 +188,14 @@ class Manipulation:
                     if conformation.are_adjacent(residue_i_plus_2.get_coordinates(), prev_residue.get_coordinates()):
                         print(f"i+2 coordinates {residue_i_plus_2.get_coordinates()}")
                         print(f"i-1 coordinates {prev_residue.get_coordinates()}")
-
-                        conformation.set_coordinates(res, res.coordI, res.coordJ + 2)
-                        conformation.set_coordinates(next_residue, next_residue.coordI, next_residue.coordJ+2)
+                        # flip up
+                        if res.coordJ < prev_residue.coordJ:
+                            conformation.set_coordinates(res, res.coordI, res.coordJ + 2)
+                            conformation.set_coordinates(next_residue, next_residue.coordI, next_residue.coordJ + 2)
+                        else:
+                            # flip down
+                            conformation.set_coordinates(res, res.coordI, res.coordJ - 2)
+                            conformation.set_coordinates(next_residue, next_residue.coordI, next_residue.coordJ - 2)
                         self.add_frame(conformation)
                         print(conformation.coordinates)
                         for res in conformation.all_residues:
@@ -204,8 +209,14 @@ class Manipulation:
                     residue_i_plus_2 = conformation.get_next_residue(next_residue)
                     prev_residue = conformation.get_previous_residue(res)
                     if conformation.are_adjacent(residue_i_plus_2.get_coordinates(), prev_residue.get_coordinates()):
-                        conformation.set_coordinates(res, res.coordI + 2, res.coordJ)
-                        conformation.set_coordinates(next_residue, next_residue.coordI + 2, next_residue.coordJ)
+                        # flip right
+                        if res.coordI < prev_residue.coordI:
+                            conformation.set_coordinates(res, res.coordI + 2, res.coordJ)
+                            conformation.set_coordinates(next_residue, next_residue.coordI + 2, next_residue.coordJ + 2)
+                        else:
+                            # flip left
+                            conformation.set_coordinates(res, res.coordI - 2, res.coordJ)
+                            conformation.set_coordinates(next_residue, next_residue.coordI - 2, next_residue.coordJ)
                         self.add_frame(conformation)
                         print(conformation.coordinates)
                         for res in conformation.all_residues:
