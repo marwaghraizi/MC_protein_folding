@@ -29,7 +29,7 @@ conda activate projet_mc
 ## Running Monte Carlo Protein folding
 
 ```
-python fold_protein.py -f data/sample2.fasta -n 1000 --display-graph optimal --display-final-frame --initial-conformation random
+python fold_protein.py -f data/sample2.fasta -n 2500 --display-graph optimal --display-final-frame --initial-conformation random
 ```
 ### Argument Options
 
@@ -42,9 +42,20 @@ python fold_protein.py -f data/sample2.fasta -n 1000 --display-graph optimal --d
 |      -n,--n-iterations       | Number of iterations.                                                                                                                  |
 |      -t, --temperature       | Search temperature.                                                                                                                    |
 |    -s, --search-space        | Moves search neighborhood: VSHD (corner, crankshaft and end moves), pull (pull move only), VSHD-pull (all four moves).                 |
-|      --probability-pull      | In the case of the VSHD-pull hybrid search space, specify the probability of applying the pull move.                                   |
+|      --probability-pull      | In the case of the VSHD-pull hybrid search space, specify the probability of applying the pull move. Default value is 0.5                               |
 |      --display-final-frame   | Display final protein frame as directions trace.                                                                                       |
 |      --display-graph         | Creates a .PNG with a visualization of the conformation with hydrophobic residues in blue and polar residues in red: The options are final or optimal and the default is the final conformation.                                     |
+
+### Examples
+Changing the search neighborhood
+```
+python fold_protein.py -f data/sample3.fasta -n 2500 -s pull --display-graph optimal --display-final-frame --initial-conformation linear
+```
+
+Changing the temperature
+```
+python fold_protein.py -f data/sample4.fasta -n 2500 -t 200 --display-graph optimal --initial-conformation linear
+```
 
 ## Outputs
 The program generates a **log file** detailing the protein HP sequence, the initial energy, the final energy and the optimal energy. It also outputs the detailed result of each iteration by outputting the protein in a traced directions format as well as the corresponding energy and the move that caused the new change. In the case of a randomized initial conformation, the program saves an image containing a visual representation of the protein as a directed graph. Finally, the desired output (optimal frame or final frame) is also saved as an image.
