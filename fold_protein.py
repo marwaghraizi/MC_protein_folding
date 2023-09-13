@@ -83,6 +83,7 @@ if __name__ == '__main__':
     n_iterations = args.n_iterations
     temperature = args.temperature
     search_space = args.search_space
+    pull_probability = args.probability_pull
 
     sequence = ""
     # if the input is a fasta file, read the sequence and transform it to HP if
@@ -134,7 +135,7 @@ if __name__ == '__main__':
     manipulation.add_frame(protein, 'initial input')
     # apply the monte carlo protein folding algorithm in the desired search
     # neighborhood
-    manipulation.apply_monte_carlo(search_space)
+    manipulation.apply_monte_carlo(search_space, pull_probability)
     # retrieve final frame
     final_frame = manipulation.all_frames[-1]
     # retrieve optimal frame
