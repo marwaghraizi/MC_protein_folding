@@ -10,22 +10,31 @@ if __name__ == '__main__':
     hydrophobic_residues = ["C", "W", "G", "A", "P", "I", "L", "M", "F", "V"]
 
     parser = argparse.ArgumentParser(description="Fold HP Protein")
-    parser.add_argument('-f', '--file', type=str, default='test.fasta', help='Protein File Path')
-    parser.add_argument('-p', '--protein', help="input protein sequence in classic or HP format")
-    parser.add_argument('-i', '--initial-conformation', choices=["linear", "random"], default="linear",
-                        help='initial conformation of the protein: linear or randomized placements')
-    parser.add_argument('-n', '--n-iterations', type=int, default=1000, help="number of search iterations")
+    parser.add_argument('-f', '--file', type=str, default='test.fasta',
+                        help='Protein File Path')
+    parser.add_argument('-p', '--protein',
+                        help="input protein sequence in classic or HP format")
+    parser.add_argument('-i', '--initial-conformation',
+                        choices=["linear", "random"], default="linear",
+                        help='initial conformation of the protein: linear '
+                             'or randomized placements')
+    parser.add_argument('-n', '--n-iterations', type=int, default=1000,
+                        help="number of search iterations")
     parser.add_argument('-t', '--temperature', type=float, default=100.0,
-                        help='search temperature: higher temperatures increases the probability of '
-                             'accepting energetically unfavorable moves')
-    parser.add_argument('-s', '--search-space', choices=["VSHD", "VSHD-pull", 'pull'], default='VSHD-pull')
+                        help='search temperature: higher temperatures '
+                             'increases the probability of accepting '
+                             'energetically unfavorable moves')
+    parser.add_argument('-s', '--search-space',
+                        choices=["VSHD", "VSHD-pull", 'pull'],
+                        default='VSHD-pull')
     parser.add_argument('--probability-pull', type=float, default=0.5)
-    parser.add_argument('--display-grid-all', action='store_true', help='print out all of the frames')
-    parser.add_argument('--display-grid', action='store_true', help='print out final frame')
-    parser.add_argument('--display-graph', choices=["final", "linear"], default="final", help='create png of final or optimal frame. Note: you need to '
-                                                                     'install graphviz separately https://www.graphviz.org/download/')
-    # add proba pull
-    # add optimal or final displau
+    parser.add_argument('--display-grid-all', action='store_true',
+                        help='print out all of the frames')
+    parser.add_argument('--display-grid', action='store_true',
+                        help='print out final frame')
+    parser.add_argument('--display-graph', choices=["final", "linear"],
+                        default="final",
+                        help='create png of final or optimal frame.')
     parser.set_defaults(display_grid=False)
     args = parser.parse_args()
     protein_file = args.file

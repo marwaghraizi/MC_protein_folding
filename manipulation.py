@@ -14,7 +14,7 @@ class Manipulation:
         all_frames : list
             list of all the protein objects forming the protein.
         moves : list
-            list of applied moves in each iteration to create a new conformation.
+            list of applied moves in each iteration to create a new conformation
         n_iterations : int
             energy of the protein.
         temperature : float
@@ -23,12 +23,14 @@ class Manipulation:
         Methods
         -------
         add_frame(conformation, cause='UNKNOWN'):
-            Adds the new frame (protein conformation) and the move causing it to the corresponding attributes.
+            Adds the new frame (protein conformation) and the move causing it
+            to the corresponding attributes.
         get_adjacent(position):
             Returns tuples of coordinates adjacent to a given position.
         choose_random_amino_acid(protein):
             Returns a random amino acid in a given protein.
-        choose_random_move(new_protein, residue, search_space="VSHD-pull", pull_probability=0.5)
+        choose_random_move(new_protein, residue, search_space="VSHD-pull",
+                            pull_probability=0.5)
             Chooses a random move and applies it if possible.
         end_move(conformation, res):
             Applies the end move if possible and adds a new frame.
@@ -38,6 +40,18 @@ class Manipulation:
             Applies the crankshaft move if possible and adds a new frame.
         pull_move(conformation, res)
             Applies the pull move if possible and adds a new frame.
+        undo_move()
+            Deletes the last frame
+        test_movement()
+            Tests the energy of last protein added to the frames and removes it
+            if it is unfavorable with a probability
+        apply_monte_carlo(search_space="VSHD-pull", pull_probability=0.5)
+            Applies the Monte Carlo search for n iterations.
+        get_optimal_frame()
+            Returns the protein with the lowest energy.
+        show_all_frames()
+            Prints all frames and the move causing it in the direction text
+            visualization.
         """
 
     def __init__(self, n_iterations, temperature):
@@ -59,10 +73,10 @@ class Manipulation:
         self.optimal_frame = None
 
     def add_frame(self, conformation, cause='UNKNOWN'):
-        """Adds the new frame (protein conformation) and the move causing it to the corresponding attributes."""
+        """Adds the new frame (protein conformation) and the move causing it to
+        the corresponding attributes."""
         self.all_frames.append(conformation)
         self.moves.append(cause)
-        # class attribute maybe?
 
     @staticmethod
     def get_adjacent(position):
@@ -76,7 +90,8 @@ class Manipulation:
         random_aa = random.choice(protein.all_residues)
         return random_aa
 
-    def choose_random_move(self, new_protein, residue, search_space="VSHD-pull", pull_probability=0.5):
+    def choose_random_move(self, new_protein, residue, search_space="VSHD-pull",
+                           pull_probability=0.5):
         """
         Choose a random move to execute and returns a boolean.
 
@@ -89,7 +104,8 @@ class Manipulation:
         search_space : str
             Search neighborhood: VSHD-pull, VSHD or pull
         pull_probability : float
-            Probability of choosing the pull move in the hybrid VSHD-pull search neighborhood
+            Probability of choosing the pull move in the hybrid VSHD-pull search
+            neighborhood
 
         Returns
         -------
@@ -98,7 +114,8 @@ class Manipulation:
         """
         decision = False
         if search_space == "VSHD":
-            if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
+            if residue.index == 0 or \
+                    residue.index == len(self.all_frames[-1].all_residues)-1:
                 decision = self.end_move(new_protein, residue)
             else:
                 choice = random.choice([self.crankshaft_move, self.corner_move])
@@ -106,15 +123,16 @@ class Manipulation:
 
         if search_space == "VSHD-pull":
 
-            if residue.index == 0 or residue.index == len(self.all_frames[-1].all_residues)-1:
+            if residue.index == 0 or \
+                    residue.index == len(self.all_frames[-1].all_residues)-1:
                 decision = self.end_move(new_protein, residue)
             else:
                 probability = random.random()
                 if probability < pull_probability:
-                    #choice = self.pull_move(new_protein, residue)
                     decision = self.pull_move(new_protein, residue)
                 else:
-                    choice = random.choice([self.crankshaft_move, self.corner_move])
+                    choice = random.choice([self.crankshaft_move,
+                                            self.corner_move])
                     decision = choice(new_protein, residue)
 
         if search_space == "pull":
@@ -178,61 +196,83 @@ class Manipulation:
         return False
 
     def crankshaft_move(self, conformation, res):
-        """Applies the crankshaft move of a given residue in a given conformation. If it is possible, the new conformation
-        is added to the frames and a true is returned else a false is returned. """
+        """Applies the crankshaft move of a given residue in a given
+        conformation. If it is possible, the new conformation is added
+        to the frames and a true is returned else a false is returned. """
         # Crankshaft requires a U shape of at least 4 amino acids
         if len(conformation.all_residues) < 4:
             return False
 
         next_residue = conformation.get_next_residue(res)
         # checking if residues i and i+1 constitute right angles
-        if conformation.is_right_angle(res) and conformation.is_right_angle(next_residue):
+        if conformation.is_right_angle(res) and \
+                conformation.is_right_angle(next_residue):
             # horizontal case
             if res.coordJ == next_residue.coordJ:
                 residue_i_plus_2 = conformation.get_next_residue(next_residue)
                 prev_residue = conformation.get_previous_residue(res)
                 # checking if i+2 and i-1 are adjacent to avoid Z shapes
-                if conformation.are_adjacent(residue_i_plus_2.get_coordinates(), prev_residue.get_coordinates()):
+                if conformation.are_adjacent(residue_i_plus_2.get_coordinates(),
+                                             prev_residue.get_coordinates()):
                     # flip up
                     if res.coordJ < prev_residue.coordJ:
                         # checking if the 180 flip positions are available
-                        if conformation.is_free(res.coordI, res.coordJ + 2) and conformation.is_free(next_residue.coordI, next_residue.coordJ + 2):
-                            conformation.set_coordinates(res, res.coordI, res.coordJ + 2)
-                            conformation.set_coordinates(next_residue, next_residue.coordI, next_residue.coordJ + 2)
+                        if conformation.is_free(res.coordI, res.coordJ + 2) \
+                                and conformation.is_free(next_residue.coordI,
+                                                         next_residue.coordJ + 2):
+                            conformation.set_coordinates(res, res.coordI,
+                                                         res.coordJ + 2)
+                            conformation.set_coordinates(next_residue,
+                                                         next_residue.coordI,
+                                                         next_residue.coordJ + 2)
                             self.add_frame(conformation, 'crankshaft horizontal')
                             return True
                     # flip down
                     else:
-                        if conformation.is_free(res.coordI, res.coordJ - 2) and conformation.is_free(
-                                next_residue.coordI, next_residue.coordJ - 2):
-                            conformation.set_coordinates(res, res.coordI, res.coordJ - 2)
-                            conformation.set_coordinates(next_residue, next_residue.coordI, next_residue.coordJ - 2)
+                        if conformation.is_free(res.coordI, res.coordJ - 2) \
+                                and conformation.is_free(next_residue.coordI,
+                                                         next_residue.coordJ - 2):
+                            conformation.set_coordinates(res, res.coordI,
+                                                         res.coordJ - 2)
+                            conformation.set_coordinates(next_residue,
+                                                         next_residue.coordI,
+                                                         next_residue.coordJ - 2)
                             self.add_frame(conformation, 'crankshaft horizontal')
                             return True
             # vertical case
             elif res.coordI == next_residue.coordI:
                 residue_i_plus_2 = conformation.get_next_residue(next_residue)
                 prev_residue = conformation.get_previous_residue(res)
-                if conformation.are_adjacent(residue_i_plus_2.get_coordinates(), prev_residue.get_coordinates()):
+                if conformation.are_adjacent(residue_i_plus_2.get_coordinates(),
+                                             prev_residue.get_coordinates()):
                     # flip right
                     if res.coordI < prev_residue.coordI:
-                        if conformation.is_free(res.coordI + 2, res.coordJ) and conformation.is_free(
-                                next_residue.coordI + 2, next_residue.coordJ):
-                            conformation.set_coordinates(res, res.coordI + 2, res.coordJ)
-                            conformation.set_coordinates(next_residue, next_residue.coordI + 2, next_residue.coordJ)
+                        if conformation.is_free(res.coordI + 2, res.coordJ) and \
+                                conformation.is_free(next_residue.coordI + 2,
+                                                     next_residue.coordJ):
+                            conformation.set_coordinates(res, res.coordI + 2,
+                                                         res.coordJ)
+                            conformation.set_coordinates(next_residue,
+                                                         next_residue.coordI + 2,
+                                                         next_residue.coordJ)
                             self.add_frame(conformation, 'crankshaft vertical')
                             return True
                     # flip left
                     else:
-                        if conformation.is_free(res.coordI - 2, res.coordJ) and conformation.is_free(
-                                next_residue.coordI - 2, next_residue.coordJ):
-                            conformation.set_coordinates(res, res.coordI - 2, res.coordJ)
-                            conformation.set_coordinates(next_residue, next_residue.coordI - 2, next_residue.coordJ)
+                        if conformation.is_free(res.coordI - 2, res.coordJ) and \
+                                conformation.is_free(next_residue.coordI - 2,
+                                                     next_residue.coordJ):
+                            conformation.set_coordinates(res, res.coordI - 2,
+                                                         res.coordJ)
+                            conformation.set_coordinates(next_residue,
+                                                         next_residue.coordI - 2,
+                                                         next_residue.coordJ)
                             self.add_frame(conformation, 'crankshaft vertical')
         return False
 
     def pull_move(self, _conformation, _residue):
-        if _residue.index == 0 or _residue.index == len(self.all_frames[-1].all_residues) - 1:
+        if _residue.index == 0 \
+                or _residue.index == len(self.all_frames[-1].all_residues) - 1:
             return False
         conformation = _conformation.copy_protein()
         prev_residue = conformation.get_previous_residue(_residue)
@@ -241,14 +281,17 @@ class Manipulation:
 
         residue_coordinates = residue.get_coordinates()
 
-        # L: empty lattice position which is adjacent to i+1 and diagonally adjacent to i
+        # L: empty lattice position which is adjacent to i+1 and
+        # diagonally adjacent to i
         l_position_options = []
         for position in conformation.get_empty_topological_positions(next_residue):
-            if conformation.are_diagonally_adjacent(position, residue_coordinates):
+            if conformation.are_diagonally_adjacent(position,
+                                                    residue_coordinates):
                 l_position_options.append(position)
 
         # C mutually adjacent to L and i
-        c_positions = None
+        c_positions = tuple()
+        l_positions = tuple()
         if l_position_options:
             for position in l_position_options:
                 neighbors_of_l = self.get_adjacent(position)
@@ -284,8 +327,10 @@ class Manipulation:
         conformation.set_coordinates(residue, *l_positions)
 
         residue_i_minus_2 = conformation.get_previous_residue(prev_residue)
-        # conformation is considered valid if i-2 is next to C which is now occupied by i-1
-        if conformation.are_adjacent(residue_i_minus_2.get_coordinates(), c_positions):
+        # conformation is considered valid if i-2 is next to C
+        # which is now occupied by i-1
+        if conformation.are_adjacent(residue_i_minus_2.get_coordinates(),
+                                     c_positions):
             self.add_frame(conformation,  'pull w/ 1 step')
             return True
 
@@ -299,8 +344,8 @@ class Manipulation:
             curr_conformation.set_coordinates(curr_residue, *updated_coordinates)
             # break early if valid conformation is found
             residue_i_minus_2 = curr_conformation.get_residue_at_idx(residue.index - 2)
-            if curr_conformation.are_adjacent(residue_i_minus_2.get_coordinates(), c_positions) and \
-                    curr_conformation.is_valid():
+            if curr_conformation.are_adjacent(residue_i_minus_2.get_coordinates(),
+                                              c_positions) and curr_conformation.is_valid():
                 break
             j -= 1
         self.add_frame(curr_conformation, 'pull w/ n steps')
@@ -317,12 +362,14 @@ class Manipulation:
         accept or reject an energetically unfavorable move."""
         current_energy = self.all_frames[-1].calculate_energy()
         previous_energy = self.all_frames[-2].calculate_energy()
-        # if the added protein has a lower energy than the previous one, frames are kept as is
+        # if the added protein has a lower energy than the previous one,
+        # frames are kept as is
         if current_energy <= previous_energy:
             #print("Move was successful")
             pass
         else:
-            # if the protein has a higher energy than the previous one, it is accepted based on random probability.
+            # if the protein has a higher energy than the previous one,
+            # it is accepted based on random probability.
             energy_difference = current_energy - previous_energy
             probability = math.exp(energy_difference/self.temperature)
             random_number = random.random()
@@ -334,38 +381,46 @@ class Manipulation:
                 self.undo_move()
 
     def apply_monte_carlo(self, search_space="VSHD-pull", pull_probability=0.5):
-        """Applies the search whereby each iteration includes choosing an amino acid, a random movement,
-        testing if the amino acid can undergo the movement, if not choosing another amino acid until a
-        successful move that is subsequently tested for its energy."""
-        for i in tqdm(range(self.n_iterations), desc="Progress"):
+        """Applies the search whereby each iteration includes choosing an amino
+        acid, a random movement, testing if the amino acid can undergo the
+        movement, if not choosing another amino acid until a successful move
+        that is subsequently tested for its energy."""
+        for _ in tqdm(range(self.n_iterations), desc="Progress"):
             move_successful = False
-            # list to keep track of amino acids in the case of none of them being able to apply a move
+            # list to keep track of amino acids in the case of none of
+            # them being able to apply a move
             amino_acids_used = []
             # if the randomly chosen move fails choose another amino acid
-            while move_successful is False and len(amino_acids_used) < len(self.all_frames[0].all_residues):
-                # deep copy the protein before choosing the amino acid and applying the move
+            while move_successful is False \
+                    and len(amino_acids_used) < len(self.all_frames[0].all_residues):
+                # deep copy the protein before choosing the amino acid
+                # and applying the move
                 new_protein = self.all_frames[-1].copy_protein()
                 aa = self.choose_random_amino_acid(new_protein)
                 if aa not in amino_acids_used:
                     amino_acids_used.append(aa)
-                    move_successful = self.choose_random_move(new_protein, aa, search_space, pull_probability)
+                    move_successful = self.choose_random_move(new_protein, aa,
+                                                              search_space,
+                                                              pull_probability)
             # once a move is successful, it has to be tested energy wise
             self.test_movement()
 
     def get_optimal_frame(self):
-        """Returns the protein with the lowest energy"""
+        """Returns the protein with the lowest energy."""
         min_energy = 0
         optimal_conformation = None
         for protein in self.all_frames:
-            curr_energy = self.all_energies.append(protein.calculate_energy())
+            self.all_energies.append(protein.calculate_energy())
+            curr_energy = protein.calculate_energy()
             if curr_energy <= min_energy:
                 min_energy = curr_energy
                 optimal_conformation = protein
         return optimal_conformation
 
     def show_all_frames(self):
-        """Prints all frames and the move causing it in the direction text visualization."""
+        """Prints all frames and the move causing it in the direction
+        text visualization."""
         for idx, conformation in enumerate(self.all_frames):
-            print(f"-------- Frame {idx} - Caused by {self.moves[idx]} --------")
+            print(f"-------- Frame {idx} - Caused by {self.moves[idx]} -------")
             print(conformation.show())
             #print(conformation.grid_show())
