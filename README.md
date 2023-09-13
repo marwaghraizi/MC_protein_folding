@@ -1,5 +1,5 @@
 # Monte Carlo HP Protein Folding
-This program is a implementation of a Replica Exchange Monte Carlo algorithm (REMC) described in the paper _"A replica exchange Monte Carlo algorithm for protein folding in the HP model"_, by THACHUK C. and _al_. (2007)
+This program is a implementation of a Monte Carlo algorithm for protein folding as described in the paper _"A replica exchange Monte Carlo algorithm for protein folding in the HP model"_, by THACHUK C. and _al_. (2007)
 ## Installation
 
 Clone this repository:
