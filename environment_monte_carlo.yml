@@ -1,0 +1,7 @@
+name: project_mc
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python-graphviz
+  - tqdm
