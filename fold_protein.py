@@ -36,8 +36,11 @@ def create_list_of_residue_objects(HP_sequence):
         residues.append(residue_object)
     return residues
 
-def randomize_protein():
-    return ""
+def randomize_protein(protein):
+    new_protein = protein.copy_protein()
+    #for i in range(len(new_protein.all_residues)-1):
+
+    return None
 
 
 if __name__ == '__main__':
