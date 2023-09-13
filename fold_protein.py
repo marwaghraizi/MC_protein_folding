@@ -148,13 +148,13 @@ if __name__ == '__main__':
         elif args.protein:
             final_frame.graph_show("protein_display")
             print(f"Graph representation is saved to "
-                  f"protein_optimal_display.png")
+                  f"protein_final_display.png")
     elif args.display_graph == "optimal":
         if args.file:
             file_name = args.file.rsplit(".")[0]
             optimal_protein.graph_show(f"{file_name}_optimal_display")
             print(f"Graph representation is saved to {file_name}_"
-                  f"final_display.png")
+                  f"optimal_display.png")
         elif args.protein:
             optimal_protein.graph_show("protein_display")
             print(f"Graph representation is saved to "
