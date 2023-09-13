@@ -18,7 +18,7 @@ Install [miniconda](https://docs.conda.io/en/latest/miniconda.html).
 Create the `projet_mc` conda environment:
 
 ```
-conda env create -f environment_monte_carlo.yml
+conda env create -f doc/environment_monte_carlo.yml
 ```
 
 Load the `projet_mc` conda environment:
