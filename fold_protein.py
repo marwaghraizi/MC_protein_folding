@@ -19,9 +19,10 @@ if __name__ == '__main__':
                         help='search temperature: higher temperatures increases the probability of '
                              'accepting energetically unfavorable moves')
     parser.add_argument('-s', '--search-space', choices=["VSHD", "VSHD-pull", 'pull'], default='VSHD-pull')
+    parser.add_argument('--probability-pull', type=float, default=0.5)
     parser.add_argument('--display-grid-all', action='store_true', help='print out all of the frames')
     parser.add_argument('--display-grid', action='store_true', help='print out final frame')
-    parser.add_argument('--display-graph', action='store_true', help='create png of final frame. Note: you need to '
+    parser.add_argument('--display-graph', choices=["final", "linear"], default="final", help='create png of final or optimal frame. Note: you need to '
                                                                      'install graphviz separately https://www.graphviz.org/download/')
     # add proba pull
     # add optimal or final displau
@@ -83,7 +84,7 @@ if __name__ == '__main__':
     if args.display_grid:
         print(final_frame.show())
         print(final_frame.grid_show())
-    if args.display_graph:
+    if args.display_graph == "final":
         final_frame.graph_show(f"{protein_file}_display")
     print(f"----- Final Energy {final_frame.calculate_energy()} -----")
     for residue in final_frame.all_residues:
