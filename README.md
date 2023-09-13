@@ -26,3 +26,7 @@ Load the `projet_mc` conda environment:
 ```
 conda activate projet_mc
 ```
+## Running Monte Carlo Protein folding
+
+```
+python fold_protein.py -f data/sample2.fasta -n 1000 --display-graph optimal --display-final-frame --initial-conformation random```
