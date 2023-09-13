@@ -1,1 +1,1 @@
-# MC_protein_folding
+# Monte Carlo HP Protein Folding
