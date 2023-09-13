@@ -1,0 +1,206 @@
+The HP model of the protein is: HPHPPHHPHPPHPHHPPHPH
+The starting energy is -1
+The final energy is -3
+The optimal energy is -5
+------------------------------------- Frame 0 - Caused by initial input - Energy: -1 -------
+URURUUUULDLULLLDRRD
+-------- Frame 1 - Caused by pull w/ n steps - Energy: -2 -------
+URUUURULLDLULLLDRRD
+-------- Frame 2 - Caused by pull w/ n steps - Energy: -1 -------
+UUURRULLLDLULLLDRRD
+-------- Frame 3 - Caused by pull w/ n steps - Energy: -1 -------
+UUURRULLLLULDLLDRRD
+-------- Frame 4 - Caused by pull w/ n steps - Energy: -1 -------
+LURRRULLLLULDLLDRRD
+-------- Frame 5 - Caused by end move w/ 1 option or probability - Energy: -2 -------
+LURRRULLLLULDLLDRRR
+-------- Frame 6 - Caused by pull w/ n steps - Energy: -2 -------
+URDRUULLLLULDLLDRRR
+-------- Frame 7 - Caused by end move w/ 1 option or probability - Energy: -3 -------
+RRDRUULLLLULDLLDRRR
+-------- Frame 8 - Caused by pull w/ n steps - Energy: -2 -------
+RRRRULLLLLULDLLDRRR
+-------- Frame 9 - Caused by pull w/ n steps - Energy: -5 -------
+RRRULLLLUULDDLLDRRR
+-------- Frame 10 - Caused by pull w/ n steps - Energy: -5 -------
+RUULDLLLUULDDLLDRRR
+-------- Frame 11 - Caused by pull w/ n steps - Energy: -4 -------
+RULLLLUUULDDDLLDRRR
+-------- Frame 12 - Caused by end move w/ 2 option - Energy: -4 -------
+UULLLLUUULDDDLLDRRR
+-------- Frame 13 - Caused by pull w/ n steps - Energy: -3 -------
+LLLLUUULLDRDDLLDRRR
+-------- Frame 14 - Caused by pull w/ n steps - Energy: -4 -------
+LLUUULLLDRRDDLLDRRR
+-------- Frame 15 - Caused by pull w/ 1 step - Energy: -2 -------
+LLUUULLLDRRDLLDDRRR
+-------- Frame 16 - Caused by pull w/ n steps - Energy: -2 -------
+UUULULDLDRRDLLDDRRR
+-------- Frame 17 - Caused by corner move - Energy: -2 -------
+UUULULLDDRRDLLDDRRR
+-------- Frame 18 - Caused by pull w/ i-1 in C - Energy: -3 -------
+UUULULLDDRRDLDLDRRR
+-------- Frame 19 - Caused by pull w/ n steps - Energy: -3 -------
+ULULULDDDRRDLDLDRRR
+-------- Frame 20 - Caused by end move w/ 1 option or probability - Energy: -3 -------
+ULULULDDDRRDLDLDRRD
+-------- Frame 21 - Caused by pull w/ i-1 in C - Energy: -3 -------
+ULUULLDDDRRDLDLDRRD
+-------- Frame 22 - Caused by corner move - Energy: -2 -------
+UULULLDDDRRDLDLDRRD
+-------- Frame 23 - Caused by end move w/ 2 option - Energy: -3 -------
+UULULLDDDRRDLDLDRRU
+-------- Frame 24 - Caused by end move w/ 1 option or probability - Energy: -2 -------
+UULULLDDDRRDLDLDRRR
+-------- Frame 25 - Caused by pull w/ i-1 in C - Energy: -2 -------
+UULULLDDDRRDDLLDRRR
+-------- Frame 26 - Caused by pull w/ i-1 in C - Energy: -2 -------
+UULULDLDDRRDDLLDRRR
+-------- Frame 27 - Caused by pull w/ i-1 in C - Energy: -2 -------
+UUULLDLDDRRDDLLDRRR
+-------- Frame 28 - Caused by pull w/ i-1 in C - Energy: -2 -------
+UUULLDLDDRDRDLLDRRR
+-------- Frame 29 - Caused by pull w/ n steps - Energy: -1 -------
+UUULLDLDDRDDLDDRURR
+-------- Frame 30 - Caused by pull w/ n steps - Energy: -2 -------
+ULLDLDDRRDLDLDDRURR
+-------- Frame 31 - Caused by pull w/ n steps - Energy: -2 -------
+LDLDDRRRDLLDLDDRURR
+-------- Frame 32 - Caused by pull w/ n steps - Energy: -3 -------
+LDLDRRRRDLLDLDDRURR
+-------- Frame 33 - Caused by corner move - Energy: -2 -------
+LDLDRRRRDLLDLDDRRUR
+-------- Frame 34 - Caused by corner move - Energy: -1 -------
+LLDDRRRRDLLDLDDRRUR
+-------- Frame 35 - Caused by corner move - Energy: -2 -------
+LLDDRRRRDLLDLDDRURR
+-------- Frame 36 - Caused by pull w/ n steps - Energy: 0 -------
+LLDDRRRDLDLDDDRUURR
+-------- Frame 37 - Caused by corner move - Energy: 0 -------
+LLDDRRRDDLLDDDRUURR
+-------- Frame 38 - Caused by corner move - Energy: 0 -------
+LLDDRRRDLDLDDDRUURR
+-------- Frame 39 - Caused by pull w/ n steps - Energy: -1 -------
+LLDDRRDDLLDRDDRUURR
+-------- Frame 40 - Caused by pull w/ 1 step - Energy: -2 -------
+LLDRRDDDLLDRDDRUURR
+-------- Frame 41 - Caused by corner move - Energy: -1 -------
+LLDRDRDDLLDRDDRUURR
+-------- Frame 42 - Caused by corner move - Energy: 0 -------
+LLDRDRDDLLDRDDRURUR
+-------- Frame 43 - Caused by end move w/ 1 option or probability - Energy: 0 -------
+DLDRDRDDLLDRDDRURUR
+-------- Frame 44 - Caused by pull w/ n steps - Energy: -1 -------
+DLDRDRDDLLDRDRRUURD
+-------- Frame 45 - Caused by pull w/ i-1 in C - Energy: -1 -------
+DLDRRDDDLLDRDRRUURD
+-------- Frame 46 - Caused by pull w/ n steps - Energy: -1 -------
+DLDRRDDDLDDRDRUUURD
+-------- Frame 47 - Caused by end move w/ 1 option or probability - Energy: -1 -------
+DLDRRDDDLDDRDRUUURR
+-------- Frame 48 - Caused by pull w/ n steps - Energy: -2 -------
+DDRDRDLDLDDRDRUUURR
+-------- Frame 49 - Caused by pull w/ i-1 in C - Energy: -3 -------
+DDRDRDLDLDRDDRUUURR
+-------- Frame 50 - Caused by corner move - Energy: -3 -------
+DDDRRDLDLDRDDRUUURR
+-------- Frame 51 - Caused by pull w/ i-1 in C - Energy: -3 -------
+DDRDRDLDLDRDDRUUURR
+-------- Frame 52 - Caused by pull w/ n steps - Energy: -3 -------
+DDRDRDLDLDRDRUURURD
+-------- Frame 53 - Caused by corner move - Energy: -1 -------
+DDRDRDLDLDDRRUURURD
+-------- Frame 54 - Caused by end move w/ 1 option or probability - Energy: -1 -------
+DDRDRDLDLDDRRUURURR
+-------- Frame 55 - Caused by end move w/ 1 option or probability - Energy: -1 -------
+DDRDRDLDLDDRRUURURD
+-------- Frame 56 - Caused by end move w/ 1 option or probability - Energy: -1 -------
+RDRDRDLDLDDRRUURURD
+-------- Frame 57 - Caused by pull w/ n steps - Energy: -1 -------
+RDRDDDLDDRRRULURURD
+-------- Frame 58 - Caused by pull w/ i-1 in C - Energy: -1 -------
+RDRDDDDLDRRRULURURD
+-------- Frame 59 - Caused by end move w/ 2 option - Energy: -1 -------
+RDRDDDDLDRRRULURURU
+-------- Frame 60 - Caused by pull w/ n steps - Energy: -2 -------
+RDDDDLDDRURRULURURU
+-------- Frame 61 - Caused by end move w/ 1 option or probability - Energy: -2 -------
+LDDDDLDDRURRULURURU
+-------- Frame 62 - Caused by end move w/ 2 option - Energy: -2 -------
+LDDDDLDDRURRULURURD
+-------- Frame 63 - Caused by pull w/ n steps - Energy: -2 -------
+DDDLDLDRRURRULURURD
+-------- Frame 64 - Caused by pull w/ n steps - Energy: -2 -------
+DLDLDDRURURRULURURD
+-------- Frame 65 - Caused by pull w/ n steps - Energy: -3 -------
+DLLDRDRURURRULURURD
+-------- Frame 66 - Caused by pull w/ i-1 in C - Energy: -3 -------
+DLLDRDRURURRULUURRD
+-------- Frame 67 - Caused by pull w/ 1 step - Energy: -2 -------
+DLLDRDRURRRUULUURRD
+-------- Frame 68 - Caused by pull w/ n steps - Energy: -1 -------
+DLLDRRRRRUULUURRRDL
+-------- Frame 69 - Caused by pull w/ n steps - Energy: -1 -------
+DLDRRRRUULUURRRRDLL
+-------- Frame 70 - Caused by end move w/ 1 option or probability - Energy: -2 -------
+LLDRRRRUULUURRRRDLL
+-------- Frame 71 - Caused by pull w/ n steps - Energy: -1 -------
+LDRRRUULUUURDRRRDLL
+-------- Frame 72 - Caused by pull w/ n steps - Energy: -1 -------
+DRURRUULUUURDRRRDLL
+-------- Frame 73 - Caused by end move w/ 2 option - Energy: -1 -------
+URURRUULUUURDRRRDLL
+-------- Frame 74 - Caused by corner move - Energy: -1 -------
+URURRUULUUURRDRRDLL
+-------- Frame 75 - Caused by pull w/ 1 step - Energy: -2 -------
+URURRUUUULURRDRRDLL
+-------- Frame 76 - Caused by corner move - Energy: -2 -------
+UURRRUUUULURRDRRDLL
+-------- Frame 77 - Caused by end move w/ 1 option or probability - Energy: 0 -------
+UURRRUUUULURRDRRDLD
+-------- Frame 78 - Caused by pull w/ n steps - Energy: -1 -------
+RRDRUUUUULURRDRRDLD
+-------- Frame 79 - Caused by pull w/ n steps - Energy: 0 -------
+RRRRULUUULURRDRRDLD
+-------- Frame 80 - Caused by end move w/ 1 option or probability - Energy: -2 -------
+RRRRULUUULURRDRRDLL
+-------- Frame 81 - Caused by pull w/ n steps - Energy: -1 -------
+RRRRULUUUURDRRDDLUL
+-------- Frame 82 - Caused by pull w/ n steps - Energy: -1 -------
+DRURULUUUURDRRDDLUL
+-------- Frame 83 - Caused by corner move - Energy: -1 -------
+DRURULUUUURDRRDDLLU
+-------- Frame 84 - Caused by pull w/ n steps - Energy: -2 -------
+RRRULLUUUURDRRDDLLU
+-------- Frame 85 - Caused by pull w/ n steps - Energy: -2 -------
+DRUULLUUUURDRRDDLLU
+-------- Frame 86 - Caused by pull w/ n steps - Energy: -2 -------
+DRUULLUUURRRDRDLLLU
+-------- Frame 87 - Caused by pull w/ n steps - Energy: -2 -------
+RULLUUUURDRRDRDLLLU
+-------- Frame 88 - Caused by pull w/ n steps - Energy: 0 -------
+ULUUUUURDDRRDRDLLLU
+-------- Frame 89 - Caused by pull w/ i-1 in C - Energy: 0 -------
+ULUUUUURDDRDRRDLLLU
+-------- Frame 90 - Caused by end move w/ 1 option or probability - Energy: -1 -------
+LLUUUUURDDRDRRDLLLU
+-------- Frame 91 - Caused by pull w/ n steps - Energy: -2 -------
+UUUUUURDDDRDRRDLLLU
+-------- Frame 92 - Caused by pull w/ n steps - Energy: -2 -------
+UUUUURDDRDRRRDLLLLU
+-------- Frame 93 - Caused by pull w/ i-1 in C - Energy: -2 -------
+UUUUURDDRRDRRDLLLLU
+-------- Frame 94 - Caused by pull w/ n steps - Energy: -4 -------
+UUUUURDDRRDRDLDLULU
+-------- Frame 95 - Caused by pull w/ n steps - Energy: -3 -------
+UUUURDRRDRRDLLDLULU
+-------- Frame 96 - Caused by pull w/ n steps - Energy: -3 -------
+ULURRDRRDRRDLLDLULU
+-------- Frame 97 - Caused by end move w/ 1 option or probability - Energy: -2 -------
+ULURRDRRDRRDLLDLULL
+-------- Frame 98 - Caused by pull w/ i-1 in C - Energy: -2 -------
+ULURRDRRRDRDLLDLULL
+-------- Frame 99 - Caused by end move w/ 2 option - Energy: -3 -------
+ULURRDRRRDRDLLDLULU
+-------- Frame 100 - Caused by pull w/ n steps - Energy: -3 -------
+UURDRRRDRDDLULDLULU

@@ -2,9 +2,9 @@ import argparse
 import random
 import sys
 
-from protein import Protein
-from residue import Residue
-from manipulation import Manipulation
+from src.protein import Protein
+from src.residue import Residue
+from src.manipulation import Manipulation
 
 
 def translate_to_HP(_sequence):
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     # if the initial conformation desired is random
     if initial_conformation == 'random':
         protein = randomize_protein(initial_linear_protein)
-        protein.graph_show("initial_randomized_protein")
+        protein.graph_show("results/initial_randomized_protein")
         starting_energy = protein.calculate_energy()
         print(f"Initial conformation of the protein is randomized with a "
               f"starting energy of {starting_energy}.\nFind the graph "
@@ -142,26 +142,27 @@ if __name__ == '__main__':
     if args.display_graph == "final":
         if args.file:
             file_name = args.file.rsplit(".")[0]
-            final_frame.graph_show(f"{file_name}_final_display")
+            file_name = file_name.rsplit("/")[1]
+            final_frame.graph_show(f"results/{file_name}_final_display")
             print(f"Graph representation is saved to {file_name}_"
                   f"final_display.png")
         elif args.protein:
-            final_frame.graph_show("protein_display")
+            final_frame.graph_show("results/protein_final_display")
             print(f"Graph representation is saved to "
                   f"protein_final_display.png")
     elif args.display_graph == "optimal":
         if args.file:
-            print("YAY")
             file_name = args.file.rsplit(".")[0]
-            optimal_protein.graph_show(f"{file_name}_optimal_display")
+            file_name = file_name.rsplit("/")[1]
+            optimal_protein.graph_show(f"results/{file_name}_optimal_display")
             print(f"Graph representation is saved to {file_name}_"
                   f"optimal_display.png")
         elif args.protein:
-            optimal_protein.graph_show("protein_display")
+            optimal_protein.graph_show("results/protein_optimal_display")
             print(f"Graph representation is saved to "
                   f"protein_optimal_display.png")
 
-    with open("protein_folding_log.txt", "w") as filout:
+    with open("results/protein_folding_log.txt", "w") as filout:
         filout.write(f"The HP model of the protein is: {sequence}\n")
         filout.write(f"The starting energy is {protein.calculate_energy()}\n")
         filout.write(f"The final energy is {final_frame.calculate_energy()}\n")
