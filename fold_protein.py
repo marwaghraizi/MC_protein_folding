@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('--display-graph', choices=["final", "linear"],
                         default="final",
                         help='create png of final or optimal frame.')
-    parser.set_defaults(display_grid=False)
+    #parser.set_defaults(display_grid=False)
     args = parser.parse_args()
     protein_file = args.file
     initial_confirmation = args.initial_conformation

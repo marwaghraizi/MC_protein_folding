@@ -11,9 +11,11 @@ class Residue:
         HP_type : char
             polarity of the residue: H for hydrophobic and P for polar.
         coordI : int
-            i coordinate of the residue's position (equivalent to the x coordinate)
+            i coordinate of the residue's position (equivalent to the
+            x coordinate)
         coordJ: int
-            j coordinate of the residue's position (equivalent to the y coordinate)
+            j coordinate of the residue's position (equivalent to the
+            y coordinate)
 
         Methods
         -------
@@ -22,7 +24,8 @@ class Residue:
         set_coordinates(new_i, new_j):
             Updates the residue's coordinates.
         get_topological_neighbors_positions():
-            Retrieves the coordinates of the 4 adjacent topological positions around the residue.
+            Retrieves the coordinates of the 4 adjacent topological positions
+            around the residue.
         """
 
     def __init__(self, hp_type, index):
@@ -51,6 +54,8 @@ class Residue:
         self.coordJ = new_j
 
     def get_topological_neighbors_positions(self):
-        """Returns the four adjacent positions of a residue as a tuple of tuples"""
-        return (self.coordI - 1, self.coordJ), (self.coordI + 1, self.coordJ), (self.coordI,  self.coordJ - 1), \
+        """Returns the four adjacent positions of a residue
+        as a tuple of tuples"""
+        return (self.coordI - 1, self.coordJ), (self.coordI + 1, self.coordJ), \
+               (self.coordI,  self.coordJ - 1), \
                (self.coordI, self.coordJ + 1)
