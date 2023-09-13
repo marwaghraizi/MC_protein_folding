@@ -1,16 +1,49 @@
-import random
 import argparse
+import random
+import sys
+
 from protein import Protein
 from residue import Residue
 from manipulation import Manipulation
 
-if __name__ == '__main__':
-    #random.seed(5)
+
+def translate_to_HP(_sequence):
     polar_residues = ["E", "D", "H", "T", "S", "Y", "N", "Q", "R", "K", "H"]
     hydrophobic_residues = ["C", "W", "G", "A", "P", "I", "L", "M", "F", "V"]
+    hp_sequence = ""
+    # if the sequence is already in HP format
+    if _sequence.strip("HP") == "":
+        print(f"The HP model of the protein is: {_sequence}")
+        return _sequence
+    else:
+        for aa in _sequence:
+            if aa in hydrophobic_residues:
+                hp_sequence += "H"
+            elif aa in polar_residues:
+                hp_sequence += "P"
+            else:
+                sys.exit("You entered an invalid amino acid one letter symbol."
+                         " Exiting the program.")
+        print(f"The HP model of the protein is: {hp_sequence}")
+    return hp_sequence
 
+
+def create_list_of_residue_objects(HP_sequence):
+    residues = []
+    for idx, res in enumerate(HP_sequence):
+        residue_object = Residue(res, idx)
+        residue_object.set_coordinates(idx, 0)
+        residues.append(residue_object)
+    return residues
+
+def randomize_protein():
+    return ""
+
+
+if __name__ == '__main__':
+    random.seed(5)
     parser = argparse.ArgumentParser(description="Fold HP Protein")
-    parser.add_argument('-f', '--file', type=str, default='test.fasta',
+    parser.add_argument('-f', '--file', type=str,
                         help='Protein File Path')
     parser.add_argument('-p', '--protein',
                         help="input protein sequence in classic or HP format")
@@ -28,40 +61,74 @@ if __name__ == '__main__':
                         choices=["VSHD", "VSHD-pull", 'pull'],
                         default='VSHD-pull')
     parser.add_argument('--probability-pull', type=float, default=0.5)
-    parser.add_argument('--display-grid-all', action='store_true',
-                        help='print out all of the frames')
-    parser.add_argument('--display-grid', action='store_true',
-                        help='print out final frame')
+    #parser.add_argument('--display-grid-all', action='store_true',
+                        #help='print out all of the frames')
+    parser.add_argument('--display-final-frame', action='store_true',
+                        help='Display final frame as directions trace.')
     parser.add_argument('--display-graph', choices=["final", "linear"],
                         default="final",
                         help='create png of final or optimal frame.')
     #parser.set_defaults(display_grid=False)
     args = parser.parse_args()
-    protein_file = args.file
+
     initial_confirmation = args.initial_conformation
     n_iterations = args.n_iterations
     temperature = args.temperature
     search_space = args.search_space
 
-    with open(protein_file, "r") as filein:
-        sequence = ""
-        for line in filein:
-            if not line.startswith(">"):
-                sequence += line.strip()
+    sequence = ""
+    if args.file:
+        with open(args.file, "r") as filein:
+            sequence = ""
+            for line in filein:
+                if not line.startswith(">"):
+                    sequence += line.strip()
+            sequence = translate_to_HP(sequence)
 
-    HP_sequence = ""
-    ALL_RESIDUES = []
+    if args.protein:
+        sequence = translate_to_HP(args.protein)
 
-    for idx, residue in enumerate(sequence):
-        if residue in polar_residues:
-            HP_sequence += "P"
-            residue_object = Residue("P", idx)
-            residue_object.set_coordinates(idx, 0)
-        else:
-            HP_sequence += "H"
-            residue_object = Residue("H", idx)
-            residue_object.set_coordinates(idx, 0)
-        ALL_RESIDUES.append(residue_object)
+    if sequence == "":
+        sys.exit("No input protein was provided. Exiting.")
+
+    all_residues = create_list_of_residue_objects(sequence)
+
+    initial_protein = Protein(all_residues)
+    manipulation = Manipulation(n_iterations, temperature)
+    manipulation.add_frame(initial_protein, 'initial')
+    manipulation.apply_monte_carlo(search_space)
+
+    if args.display_final_frame:
+        final_frame = manipulation.all_frames[-1]
+        print(f"The final frame can be traced as {final_frame.show()}")
+        #print(final_frame.grid_show())
+
+    if args.display_graph == "final":
+        final_frame = manipulation.all_frames[-1]
+        if args.file:
+            file_name = args.file.rsplit(".")[0]
+            print(file_name)
+            final_frame.graph_show(f"{file_name}_display")
+        elif args.protein:
+            final_frame.graph_show("protein_display")
+            print(f"Graph representation is saved to protein_display.png")
+
+    #print(f"----- Final Energy {final_frame.calculate_energy()} -----")
+    #for residue in final_frame.all_residues:
+        #print(f"residue {residue.index} with coordinates {residue.get_coordinates()}")
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     if initial_confirmation == 'random':
         # occupied_positions = [residue.get_coordinates() for residue in ALL_RESIDUES]
@@ -83,21 +150,17 @@ if __name__ == '__main__':
         #     ALL_RESIDUES[i + 1].set_coordinates(*(random_neighbor))
         #     occupied_positions = [residue.get_coordinates() for residue in ALL_RESIDUES]
         pass
-    initial_protein = Protein(ALL_RESIDUES)
-    manipulation = Manipulation(n_iterations, temperature)
-    manipulation.add_frame(initial_protein, 'initial')
-    manipulation.apply_monte_carlo(search_space)
-    final_frame = manipulation.all_frames[-1]
-    if args.display_grid_all:
-        manipulation.show_all_frames()
-    if args.display_grid:
-        print(final_frame.show())
-        print(final_frame.grid_show())
-    if args.display_graph == "final":
-        final_frame.graph_show(f"{protein_file}_display")
-    print(f"----- Final Energy {final_frame.calculate_energy()} -----")
-    for residue in final_frame.all_residues:
-        print(f"residue {residue.index} with coordinates {residue.get_coordinates()}")
+
+
+
+
+
+
+
+
+
+
+
 
     # if the sequence was given in HP format keep it as is if not (if not sequence.strip("HP") == "" --> translate it
     # initial conformation: linear or random (random can start with res 0 on (0,0) and place the rest randomly relative to each other
