@@ -301,7 +301,7 @@ class Protein:
         from graphviz import Digraph
 
         g = Digraph('G', engine="neato", filename=file_name, format='png')
-        g.attr(size=str(len(self.all_residues)), label="test title", labelfontsize="18.0", labelloc="t")
+        g.attr(size=str(len(self.all_residues)))
 
         # creating the nodes by looping over the residues and taking into account their HP_type and their coordinates
         for residue in self.all_residues:
