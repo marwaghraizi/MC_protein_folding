@@ -36,11 +36,19 @@ def create_list_of_residue_objects(HP_sequence):
         residues.append(residue_object)
     return residues
 
-def randomize_protein(protein):
-    new_protein = protein.copy_protein()
-    #for i in range(len(new_protein.all_residues)-1):
 
-    return None
+def randomize_protein(_protein):
+    new_protein = _protein.copy_protein()
+    for i in range(len(new_protein.all_residues)-1):
+        res = new_protein.all_residues[i]
+        next_res = new_protein.all_residues[i+1]
+        neighbors = new_protein.get_empty_topological_positions(res)
+        if neighbors:
+            new_coordinates = random.choice(neighbors)
+            new_protein.set_coordinates(next_res, *new_coordinates)
+        else:
+            return randomize_protein(_protein)
+    return new_protein
 
 
 if __name__ == '__main__':
@@ -64,95 +72,107 @@ if __name__ == '__main__':
                         choices=["VSHD", "VSHD-pull", 'pull'],
                         default='VSHD-pull')
     parser.add_argument('--probability-pull', type=float, default=0.5)
-    #parser.add_argument('--display-grid-all', action='store_true',
-                        #help='print out all of the frames')
     parser.add_argument('--display-final-frame', action='store_true',
                         help='Display final frame as directions trace.')
-    parser.add_argument('--display-graph', choices=["final", "linear"],
+    parser.add_argument('--display-graph', choices=["final", "optimal"],
                         default="final",
                         help='create png of final or optimal frame.')
-    #parser.set_defaults(display_grid=False)
     args = parser.parse_args()
 
-    initial_confirmation = args.initial_conformation
+    initial_conformation = args.initial_conformation
     n_iterations = args.n_iterations
     temperature = args.temperature
     search_space = args.search_space
 
     sequence = ""
+    # if the input is a fasta file, read the sequence and transform it to HP if
+    # needed
     if args.file:
         with open(args.file, "r") as filein:
-            sequence = ""
+            read_sequence = ""
             for line in filein:
                 if not line.startswith(">"):
-                    sequence += line.strip()
-            sequence = translate_to_HP(sequence)
+                    read_sequence += line.strip()
+            sequence = translate_to_HP(read_sequence)
 
+    # if the sequence is a command line input, transform it to HP if needed
     if args.protein:
         sequence = translate_to_HP(args.protein)
 
+    # if no sequence was provided, throw error and exit
     if sequence == "":
         sys.exit("No input protein was provided. Exiting.")
 
+    # create a list of residue objects from input sequence
     all_residues = create_list_of_residue_objects(sequence)
 
-    initial_protein = Protein(all_residues)
-    manipulation = Manipulation(n_iterations, temperature)
-    manipulation.add_frame(initial_protein, 'initial')
-    manipulation.apply_monte_carlo(search_space)
+    # create initial protein which is linear
+    initial_linear_protein = Protein(all_residues)
 
+    # if the initial conformation desired is random
+    if initial_conformation == 'random':
+        protein = randomize_protein(initial_linear_protein)
+        protein.graph_show("initial_randomized_protein")
+        starting_energy = protein.calculate_energy()
+        print(f"Initial conformation of the protein is randomized with a "
+              f"starting energy of {starting_energy}.\nFind the graph "
+              f"representation in initial_randomized_protein.png")
+    else:
+        protein = initial_linear_protein
+        print("Initial conformation of the protein is linear with a starting"
+              "energy of 0")
+
+    # create manipulation object
+    manipulation = Manipulation(n_iterations, temperature)
+    # add the initial protein as the first frame
+    manipulation.add_frame(protein, 'initial input')
+    # apply the monte carlo protein folding algorithm in the desired search
+    # neighborhood
+    manipulation.apply_monte_carlo(search_space)
+    # retrieve final frame
+    final_frame = manipulation.all_frames[-1]
+    # retrieve optimal frame
+    optimal_protein = manipulation.get_optimal_frame()
+
+    # shows the final frame as traced directions
     if args.display_final_frame:
         final_frame = manipulation.all_frames[-1]
         print(f"The final frame can be traced as {final_frame.show()}")
-        #print(final_frame.grid_show())
 
     if args.display_graph == "final":
-        final_frame = manipulation.all_frames[-1]
         if args.file:
             file_name = args.file.rsplit(".")[0]
-            print(file_name)
-            final_frame.graph_show(f"{file_name}_display")
+            final_frame.graph_show(f"{file_name}_final_display")
+            print(f"Graph representation is saved to {file_name}_"
+                  f"final_display.png")
         elif args.protein:
             final_frame.graph_show("protein_display")
-            print(f"Graph representation is saved to protein_display.png")
+            print(f"Graph representation is saved to "
+                  f"protein_optimal_display.png")
+    elif args.display_graph == "optimal":
+        if args.file:
+            file_name = args.file.rsplit(".")[0]
+            optimal_protein.graph_show(f"{file_name}_optimal_display")
+            print(f"Graph representation is saved to {file_name}_"
+                  f"final_display.png")
+        elif args.protein:
+            optimal_protein.graph_show("protein_display")
+            print(f"Graph representation is saved to "
+                  f"protein_optimal_display.png")
 
-    #print(f"----- Final Energy {final_frame.calculate_energy()} -----")
-    #for residue in final_frame.all_residues:
-        #print(f"residue {residue.index} with coordinates {residue.get_coordinates()}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    if initial_confirmation == 'random':
-        # occupied_positions = [residue.get_coordinates() for residue in ALL_RESIDUES]
-        # print(occupied_positions)
-        #
-        # for i in range(len(ALL_RESIDUES) - 1):
-        #     neighbors = get_four_neighbors(*(ALL_RESIDUES[i].get_coordinates()))
-        #     random_neighbor = rd.choice(neighbors)
-        #     isFree = False
-        #
-        #     if is_free(*(random_neighbor)):
-        #         isFree = True
-        #
-        #     while (not isFree):
-        #         random_neighbor = rd.choice(neighbors)
-        #         if is_free(*(random_neighbor)):
-        #             isFree = True
-        #
-        #     ALL_RESIDUES[i + 1].set_coordinates(*(random_neighbor))
-        #     occupied_positions = [residue.get_coordinates() for residue in ALL_RESIDUES]
-        pass
+    with open("log.txt", "w") as filout:
+        filout.write(f"The HP model of the protein is: {sequence}\n")
+        filout.write(f"The starting energy is {protein.calculate_energy()}\n")
+        filout.write(f"The final energy is {final_frame.calculate_energy()}\n")
+        filout.write(f"The optimal energy is "
+                     f"{optimal_protein.calculate_energy()}\n")
+        filout.write("-----------------------------")
+        for idx, conformation in enumerate(manipulation.all_frames):
+            energy = conformation.calculate_energy()
+            print(f"-------- Frame {idx} - Caused by {manipulation.moves[idx]} "
+                  f"- Energy: {energy} -------", file=filout)
+            print(conformation.show(), file=filout)
+        filout.close()
 
 
 
@@ -163,10 +183,6 @@ if __name__ == '__main__':
 
 
 
-
-
-    # if the sequence was given in HP format keep it as is if not (if not sequence.strip("HP") == "" --> translate it
-    # initial conformation: linear or random (random can start with res 0 on (0,0) and place the rest randomly relative to each other
     # test cases from paper:
     ## HPHPPHHPHPPHPHHPPHPH
     ## HHPPHPPHPPHPPHPPHPPHPPHH

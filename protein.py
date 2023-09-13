@@ -12,14 +12,16 @@ class Protein:
         all_residues : list
             list of all the residue objects forming the protein.
         coordinates : dict
-            dictionary with a tuple of coordinates as the key and corresponding residue as the value.
+            dictionary with a tuple of coordinates as the key and corresponding
+            residue as the value.
         energy : int
             energy of the protein.
 
         Methods
         -------
         set_coordinates(res, new_x, new_y):
-            Updates a residues coordinates as well as the conformation coordinates and its energy.
+            Updates a residues coordinates as well as the conformation
+            coordinates and its energy.
         is_free(x, y):
             Checks if a given position is empty.
         get_residue_at_idx(idx):
@@ -31,29 +33,37 @@ class Protein:
         get_connected_residues(res):
             Returns a list of covalently connected residues to a given residue.
         get_occupied_topological_neighbors(res):
-            Returns the residues surrounding a given residue and not covalently connected to it.
+            Returns the residues surrounding a given residue and not covalently
+            connected to it.
         get_empty_topological_positions(res):
-            Returns the coordinates of the empty positions surrounding a given residue.
+            Returns the coordinates of the empty positions surrounding a given
+            residue.
         is_right_angle(res):
-            Checks if a given residue forms a right angle with its previous and next residue.
+            Checks if a given residue forms a right angle with its previous and
+            next residue.
         are_adjacent(first_residue_coordinates, second_residue_coordinates):
             Checks if two residues are adjacent to each other.
-        are_diagonally_adjacent(first_residue_coordinates, second_residue_coordinates):
+        are_diagonally_adjacent(first_residue_coordinates,
+                                second_residue_coordinates):
             Checks if two residues are diagonally adjacent to each other.
         is_valid():
-            Checks if a conformation is valid if all residues are adjacent to their previous residue.
+            Checks if a conformation is valid if all residues are adjacent to
+            their previous residue.
         copy_protein():
             Returns a deep copied version of the protein.
         calculate_energy():
-            Returns the overall energy of a protein obtained from all hydrophobic contacts.
+            Returns the overall energy of a protein obtained
+            from all hydrophobic contacts.
         describe_direction(x1, y1, x2, y2):
             Returns movement direction from one position to another.
         show():
-            Returns a text representation that traces a protein with direction symbols.
+            Returns a text representation that traces
+            a protein with direction symbols.
         grid_show():
             Returns a command line graphical visualisation of a protein.
         graph_show(file_name):
-            Creates a .PNG file with the graphical representation of the protein.
+            Creates a .PNG file with the graphical representation
+            of the protein.
         """
     def __init__(self, residues):
         """
@@ -71,8 +81,8 @@ class Protein:
         self.energy = self.calculate_energy()
 
     def set_coordinates(self, residue, new_x, new_y):
-        """Updates the coordinate of the residue, the overall conformation and the energy
-        given a residue and new coordinates"""
+        """Updates the coordinate of the residue, the overall conformation
+        and the energy given a residue and new coordinates"""
         coordinates = (new_x, new_y)
         old_coordinates = residue.get_coordinates()
         residue.set_coordinates(new_x, new_y)
@@ -100,7 +110,8 @@ class Protein:
         return self.all_residues[res.index-1]
 
     def get_connected_residues(self, res):
-        """Returns a list of covalently connected residues to a given residue."""
+        """Returns a list of covalently connected residues to a
+        given residue."""
         connected_residues = []
         # first residue
         if res.index == 0:
@@ -116,7 +127,8 @@ class Protein:
         return connected_residues
 
     def get_occupied_topological_neighbors(self, res):
-        """Returns the residues surrounding a given residue and not covalently connected to it
+        """Returns the residues surrounding a given residue and not covalently
+        connected to it
 
         Parameters
         ----------
@@ -136,7 +148,8 @@ class Protein:
             connected_residues_positions[(connected_residue.coordI, connected_residue.coordJ)] = connected_residue
 
         topological_positions = res.get_topological_neighbors_positions()
-        # topological neighbors are in the topological positions and are not connected to the residue of interest
+        # topological neighbors are in the topological positions and are
+        # not connected to the residue of interest
         occupied_topological_neighbors = []
 
         for position in topological_positions:
@@ -147,7 +160,8 @@ class Protein:
         return occupied_topological_neighbors
 
     def get_empty_topological_positions(self, res):
-        """Returns the coordinates of the empty positions surrounding a given residue
+        """Returns the coordinates of the empty positions surrounding a given
+        residue
 
         Parameters
         ----------
@@ -157,7 +171,8 @@ class Protein:
         Returns
         -------
         list
-            list of tuples of coordinates of empty neighboring positions of a residue.
+            list of tuples of coordinates of empty neighboring
+            positions of a residue.
         """
         topological_positions = res.get_topological_neighbors_positions()
         empty_topological_positions = []
@@ -167,7 +182,8 @@ class Protein:
         return empty_topological_positions
 
     def is_right_angle(self, res):
-        """Checks if a given residue forms a right angle with its previous and next residue."""
+        """Checks if a given residue forms a right angle with its
+        previous and next residue."""
         if res.index == 0 or res.index == len(self.all_residues) - 1:
             return False
         x_res, y_res = res.get_coordinates()
@@ -175,10 +191,12 @@ class Protein:
         x_prev, y_prev = previous_res.get_coordinates()
         next_res = self.get_next_residue(res)
         x_next, y_next = next_res.get_coordinates()
-        # vectors formed by residue and its previous one as well as residue and its following one
+        # vectors formed by residue and its previous one as well as
+        # residue and its following one
         vector1 = (x_next - x_res, y_next - y_res)
         vector2 = (x_prev - x_res, y_prev - y_res)
-        # dot product is the sum of the product of corresponding elements in two vectors
+        # dot product is the sum of the product of corresponding
+        # elements in two vectors
         dot_product = vector1[0] * vector2[0] + vector1[1] * vector2[1]
         # if the dot product == 0 --> vectors are perpendicular
         return dot_product == 0
@@ -205,7 +223,8 @@ class Protein:
         return abs(i1 - i2) == 1 and abs(j1 - j2) == 1
 
     def is_valid(self):
-        """Checks if a conformation is valid if all residues are adjacent to their previous residue."""
+        """Checks if a conformation is valid if all residues are adjacent
+        to their previous residue."""
         idx = 1
         for residue in self.all_residues[1:]:
             if residue.get_coordinates() not in self.all_residues[idx - 1].get_topological_neighbors_positions():
@@ -223,14 +242,16 @@ class Protein:
         return copied_conformation
 
     def calculate_energy(self):
-        """Returns the overall energy of a protein obtained from all hydrophobic contacts."""
+        """Returns the overall energy of a protein obtained from
+        all hydrophobic contacts."""
         hydrophobic_contacts = set()
         for res in self.all_residues:
             if res.HP_type == "H":
                 occupied_neighbors = self.get_occupied_topological_neighbors(res)
                 # if occupied neighbors exist
                 if occupied_neighbors:
-                    # for every neighbor check type and if the interaction has not been added
+                    # for every neighbor check type and if the interaction
+                    # has not been added
                     for neighbor in occupied_neighbors:
                         if neighbor.HP_type == "H" and (neighbor.index, res.index) not in hydrophobic_contacts:
                             hydrophobic_contacts.add((res.index, neighbor.index))
@@ -239,8 +260,9 @@ class Protein:
 
     @staticmethod
     def describe_direction(x1, y1, x2, y2):
-        """Returns movement direction (U for up, D for down, L for left and R for right from one
-        residue to another given two sets of coordinates. """
+        """Returns movement direction (U for up, D for down, L for left
+        and R for right from one residue to another given two sets of
+        coordinates. """
         i1, j1 = x1, y1
         i2, j2 = x2, y2
         if j1 < j2:
@@ -253,7 +275,8 @@ class Protein:
             return "L"
 
     def show(self):
-        """Returns a text representation that traces a protein with direction symbols."""
+        """Returns a text representation that traces a protein
+        with direction symbols."""
         representation = ""
         for i in range(len(self.all_residues) - 1):
             i1, j1 = self.all_residues[i].get_coordinates()
@@ -265,8 +288,8 @@ class Protein:
         return representation
 
     def grid_show(self):
-        """Returns a command line graphical visualisation of a protein, note that it becomes unreadable for
-        proteins with 10 or more residues"""
+        """Returns a command line graphical visualisation of a protein, note
+        that it becomes unreadable for proteins with 10 or more residues"""
         representation = ''
         coordinates = list(map(lambda res: res.get_coordinates(), self.all_residues))
         if len(coordinates) == 0:
@@ -297,18 +320,21 @@ class Protein:
         return representation
 
     def graph_show(self, file_name):
-        """Creates the DOT source & Visualization PNG file to represent the directed graph"""
+        """Creates the DOT source & Visualization PNG file to
+        represent the directed graph"""
         from graphviz import Digraph
 
         g = Digraph('G', engine="neato", filename=file_name, format='png')
         g.attr(size=str(len(self.all_residues)))
 
-        # creating the nodes by looping over the residues and taking into account their HP_type and their coordinates
+        # creating the nodes by looping over the residues and taking into
+        # account their HP_type and their coordinates
         for residue in self.all_residues:
             coordinates = residue.get_coordinates()
             color = 'blue' if residue.HP_type == 'H' else 'red'
             g.node(f"{str(residue.index)}", pos=f"{coordinates[0]},{coordinates[1]}!", fillcolor=color, style='filled')
-        # creating the edges directed from the previous residue to the current one
+        # creating the edges directed from the previous residue
+        # to the current one
         for i in range(1, len(self.all_residues)):
             g.edge(f"{str(i - 1)}", f"{str(i)}")
         g.render()

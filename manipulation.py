@@ -415,12 +415,15 @@ class Manipulation:
             if curr_energy <= min_energy:
                 min_energy = curr_energy
                 optimal_conformation = protein
+        self.optimal_frame = optimal_conformation
         return optimal_conformation
 
     def show_all_frames(self):
         """Prints all frames and the move causing it in the direction
         text visualization."""
         for idx, conformation in enumerate(self.all_frames):
-            print(f"-------- Frame {idx} - Caused by {self.moves[idx]} -------")
+            energy = conformation.calculate_energy()
+            print(f"-------- Frame {idx} - Caused by "
+                  f"{self.moves[idx]} - Energy: {energy} -------")
             print(conformation.show())
             #print(conformation.grid_show())
