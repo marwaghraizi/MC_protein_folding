@@ -5,7 +5,7 @@ from residue import Residue
 from manipulation import Manipulation
 
 if __name__ == '__main__':
-    random.seed(5)
+    #random.seed(5)
     polar_residues = ["E", "D", "H", "T", "S", "Y", "N", "Q", "R", "K", "H"]
     hydrophobic_residues = ["C", "W", "G", "A", "P", "I", "L", "M", "F", "V"]
 
