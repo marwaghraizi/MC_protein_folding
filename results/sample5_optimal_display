@@ -1,0 +1,98 @@
+digraph G {
+	size=48
+	0 [fillcolor=red pos="60,4!" style=filled]
+	1 [fillcolor=red pos="59,4!" style=filled]
+	2 [fillcolor=blue pos="58,4!" style=filled]
+	3 [fillcolor=red pos="57,4!" style=filled]
+	4 [fillcolor=red pos="56,4!" style=filled]
+	5 [fillcolor=blue pos="56,5!" style=filled]
+	6 [fillcolor=blue pos="56,6!" style=filled]
+	7 [fillcolor=red pos="55,6!" style=filled]
+	8 [fillcolor=red pos="55,7!" style=filled]
+	9 [fillcolor=blue pos="54,7!" style=filled]
+	10 [fillcolor=blue pos="53,7!" style=filled]
+	11 [fillcolor=red pos="53,6!" style=filled]
+	12 [fillcolor=red pos="52,6!" style=filled]
+	13 [fillcolor=red pos="52,7!" style=filled]
+	14 [fillcolor=red pos="52,8!" style=filled]
+	15 [fillcolor=red pos="52,9!" style=filled]
+	16 [fillcolor=blue pos="52,10!" style=filled]
+	17 [fillcolor=blue pos="52,11!" style=filled]
+	18 [fillcolor=blue pos="53,11!" style=filled]
+	19 [fillcolor=blue pos="53,10!" style=filled]
+	20 [fillcolor=blue pos="53,9!" style=filled]
+	21 [fillcolor=blue pos="53,8!" style=filled]
+	22 [fillcolor=blue pos="54,8!" style=filled]
+	23 [fillcolor=blue pos="55,8!" style=filled]
+	24 [fillcolor=blue pos="56,8!" style=filled]
+	25 [fillcolor=blue pos="56,7!" style=filled]
+	26 [fillcolor=red pos="57,7!" style=filled]
+	27 [fillcolor=red pos="57,6!" style=filled]
+	28 [fillcolor=red pos="58,6!" style=filled]
+	29 [fillcolor=red pos="59,6!" style=filled]
+	30 [fillcolor=red pos="59,7!" style=filled]
+	31 [fillcolor=red pos="58,7!" style=filled]
+	32 [fillcolor=red pos="58,8!" style=filled]
+	33 [fillcolor=red pos="57,8!" style=filled]
+	34 [fillcolor=blue pos="57,9!" style=filled]
+	35 [fillcolor=blue pos="58,9!" style=filled]
+	36 [fillcolor=red pos="59,9!" style=filled]
+	37 [fillcolor=red pos="59,10!" style=filled]
+	38 [fillcolor=blue pos="58,10!" style=filled]
+	39 [fillcolor=blue pos="58,11!" style=filled]
+	40 [fillcolor=blue pos="57,11!" style=filled]
+	41 [fillcolor=red pos="56,11!" style=filled]
+	42 [fillcolor=red pos="55,11!" style=filled]
+	43 [fillcolor=blue pos="54,11!" style=filled]
+	44 [fillcolor=blue pos="54,10!" style=filled]
+	45 [fillcolor=blue pos="54,9!" style=filled]
+	46 [fillcolor=blue pos="55,9!" style=filled]
+	47 [fillcolor=blue pos="56,9!" style=filled]
+	0 -> 1
+	1 -> 2
+	2 -> 3
+	3 -> 4
+	4 -> 5
+	5 -> 6
+	6 -> 7
+	7 -> 8
+	8 -> 9
+	9 -> 10
+	10 -> 11
+	11 -> 12
+	12 -> 13
+	13 -> 14
+	14 -> 15
+	15 -> 16
+	16 -> 17
+	17 -> 18
+	18 -> 19
+	19 -> 20
+	20 -> 21
+	21 -> 22
+	22 -> 23
+	23 -> 24
+	24 -> 25
+	25 -> 26
+	26 -> 27
+	27 -> 28
+	28 -> 29
+	29 -> 30
+	30 -> 31
+	31 -> 32
+	32 -> 33
+	33 -> 34
+	34 -> 35
+	35 -> 36
+	36 -> 37
+	37 -> 38
+	38 -> 39
+	39 -> 40
+	40 -> 41
+	41 -> 42
+	42 -> 43
+	43 -> 44
+	44 -> 45
+	45 -> 46
+	46 -> 47
+}
