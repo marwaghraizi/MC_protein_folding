@@ -151,6 +151,7 @@ if __name__ == '__main__':
                   f"protein_final_display.png")
     elif args.display_graph == "optimal":
         if args.file:
+            print("YAY")
             file_name = args.file.rsplit(".")[0]
             optimal_protein.graph_show(f"{file_name}_optimal_display")
             print(f"Graph representation is saved to {file_name}_"
@@ -160,7 +161,7 @@ if __name__ == '__main__':
             print(f"Graph representation is saved to "
                   f"protein_optimal_display.png")
 
-    with open("log.txt", "w") as filout:
+    with open("protein_folding_log.txt", "w") as filout:
         filout.write(f"The HP model of the protein is: {sequence}\n")
         filout.write(f"The starting energy is {protein.calculate_energy()}\n")
         filout.write(f"The final energy is {final_frame.calculate_energy()}\n")
